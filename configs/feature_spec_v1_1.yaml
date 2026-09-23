@@ -1,0 +1,167 @@
+# ==============================================================================
+# Feature Engineering Specification Manifest — Specification Pack v1.1
+# TR–RU Bilateral Trade Forecasting & Intelligence Platform
+# ==============================================================================
+
+spec_version: "1.1"
+feature_version: "1.1.0"
+created_at: "2026-09-22T20:00:00Z"
+description: "Authoritative frozen feature engineering contract for Milestone M5."
+
+development_period:
+  start_period: "2012-01"
+  end_period: "2024-12"
+  n_months: 156
+
+holdout_period:
+  start_period: "2025-01"
+  end_period: "2025-12"
+  n_months: 12
+  status: "UNTOUCHED_ISOLATED"
+  policy: "2025 trade-target data is strictly isolated before any feature calculation. No 2025 target labels are computed in development artifacts."
+
+modeling_series_source: "data/processed/forecast_target_monthly.parquet"
+selected_sector_manifest: "configs/selected_sectors_v1_1.yaml"
+total_modeling_series: 14
+
+modeling_universe:
+  TR_RU:
+    target_semantic: "Türkiye exports to Russia (Türkiye reporter 792, Russia partner 643, Flow X)"
+    hs2_sectors:
+      - "08"
+      - "84"
+      - "39"
+      - "87"
+      - "73"
+      - "85"
+    includes_total: true
+  RU_TR:
+    target_semantic: "Türkiye imports from Russia (Türkiye reporter 792, Russia partner 643, Flow M)"
+    hs2_sectors:
+      - "27"
+      - "72"
+      - "10"
+      - "76"
+      - "23"
+      - "74"
+    includes_total: true
+
+row_semantics:
+  anchor_concept: "Monthly forecast origin t"
+  period_column: "period (YYYY-MM)"
+  target_column: "target (trade_value_usd at month t)"
+  feature_snapshot_date_column: "feature_snapshot_date (calendar month-end date of period t)"
+  label_columns:
+    - "target_h1"
+    - "target_h3"
+    - "target_h6"
+
+target_definitions:
+  h1:
+    horizon_months: 1
+    offset: "t+1 calendar month"
+    last_valid_development_origin: "2024-11"
+    last_labeled_month: "2024-12"
+    rule: "Exact level at month t+1. Period 2024-12 has NaN label in development table."
+  h3:
+    horizon_months: 3
+    offset: "t+3 calendar months"
+    last_valid_development_origin: "2024-09"
+    last_labeled_month: "2024-12"
+    rule: "Exact level at month t+3. Periods 2024-10 through 2024-12 have NaN label in development table."
+  h6:
+    horizon_months: 6
+    offset: "t+6 calendar months"
+    last_valid_development_origin: "2024-06"
+    last_labeled_month: "2024-12"
+    rule: "Exact level at month t+6. Periods 2024-07 through 2024-12 have NaN label in development table."
+
+target_lags:
+  offsets:
+    - 1
+    - 2
+    - 3
+    - 6
+    - 12
+  grouping: "Strictly per (direction, hs2) series. No cross-series leakage."
+  missing_handling: "Missing historical values remain NaN without imputation."
+
+rolling_windows:
+  windows:
+    - 3
+    - 6
+    - 12
+  rolling_shift: 1
+  min_periods_rule: "min_periods = window (complete windows required; incomplete windows yield NaN)"
+  statistics:
+    - "mean"
+    - "std"
+  std_ddof: 1
+  std_convention: "Sample standard deviation (unbiased estimator with N-1 divisor)"
+  directionality: "Strictly backward-looking on target.shift(1). Current period target y_t is strictly excluded."
+
+growth_definitions:
+  mom_growth:
+    formula: "(y_t / y_{t-1}) - 1.0"
+    safety: "Returns NaN if y_{t-1} is missing or 0. No inf or -inf allowed."
+  yoy_growth:
+    formula: "(y_t / y_{t-12}) - 1.0"
+    safety: "Returns NaN if y_{t-12} is missing or 0. No inf or -inf allowed."
+
+calendar_features:
+  month:
+    type: "integer"
+    range: "1 to 12"
+  quarter:
+    type: "integer"
+    range: "1 to 4"
+  year:
+    type: "integer"
+    range: "2012 to 2024"
+
+macro_features:
+  macro_source_registry: "configs/macro_sources_v1_1.yaml"
+  macro_data_source: "data/processed/macro_monthly.parquet"
+  indicators:
+    usd_try_lagged:
+      indicator_id: "usd_try"
+      unit: "TRY per 1 USD"
+      release_lag: "M+1, Day 1"
+    rub_usd_lagged:
+      indicator_id: "rub_usd"
+      unit: "RUB per 1 USD"
+      release_lag: "M+1, Day 1"
+    brent_lagged:
+      indicator_id: "brent"
+      unit: "USD per Barrel"
+      release_lag: "M+1, Day 1"
+    tr_ip_lagged:
+      indicator_id: "tr_ip"
+      unit: "Index (2021=100), Seasonally Adjusted"
+      release_lag: "M+2, Day 15"
+    ru_ip_lagged:
+      indicator_id: "ru_ip"
+      unit: "Index (2015=100), Seasonally Adjusted"
+      release_lag: "M+2, Day 15"
+      linkage_version: "v1.1.2_m4_r2"
+      linkage_factor: 1.2128086297589498
+
+feature_snapshot_rule:
+  definition: "calendar month-end date of period t"
+  example: "period 2024-01 -> feature_snapshot_date 2024-01-31"
+
+macro_asof_rule:
+  condition: "availability_date_or_approximation <= feature_snapshot_date"
+  selection: "latest available observation on or before snapshot date"
+  accessor: "tr_ru_forecast.data.macro.publication.PublicationSafeAccessor"
+  prohibition: "Naive period-to-period joins are strictly forbidden"
+
+missing_policy:
+  missing_equals_zero: false
+  imputation: "None. No forward-fill, backward-fill, interpolation, or mean/median imputation."
+  structural_missing: "Initial lag/rolling windows and unavailable future labels must remain NaN."
+
+holdout_policy:
+  boundary_cutoff: "period <= 2024-12"
+  isolation_timing: "Applied before all feature transformations and target shifts"
+  holdout_features_created: false

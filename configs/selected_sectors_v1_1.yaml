@@ -1,0 +1,135 @@
+spec_version: '1.1'
+selection_version: 1.1.0
+created_at: '2026-09-21T17:52:12.100234+00:00'
+development_period: 2012-01 to 2024-12
+holdout_period: 2025-01 to 2025-12 (untouched)
+target_policy:
+  TR_RU: Türkiye exporter-reported (792 -> 643, Flow X)
+  RU_TR: Türkiye importer-reported (792 <- 643, Flow M)
+total_modeling_series: 14
+TR_RU:
+- rank: 1
+  hs2: 08
+  description: Edible fruit and nuts; peel of citrus fruit or melons
+  final_score: 98.43
+  volume_score: 98.36
+  continuity_score: 100.0
+  recent_relevance_score: 98.69
+  forecastability_score: 93.44
+  development_total_usd: 9426138591.0
+  coverage_pct: 100.0
+- rank: 2
+  hs2: '84'
+  description: Nuclear reactors, boilers, machinery and mechanical appliances; parts
+    thereof
+  final_score: 98.03
+  volume_score: 100.0
+  continuity_score: 100.0
+  recent_relevance_score: 100.0
+  forecastability_score: 80.33
+  development_total_usd: 11331507857.0
+  coverage_pct: 100.0
+- rank: 3
+  hs2: '39'
+  description: Plastics and articles thereof
+  final_score: 96.43
+  volume_score: 95.08
+  continuity_score: 100.0
+  recent_relevance_score: 96.07
+  forecastability_score: 91.8
+  development_total_usd: 4058065836.0
+  coverage_pct: 100.0
+- rank: 4
+  hs2: '87'
+  description: Vehicles other than railway or tramway rolling-stock, and parts and
+    accessories thereof
+  final_score: 96.03
+  volume_score: 96.72
+  continuity_score: 100.0
+  recent_relevance_score: 97.38
+  forecastability_score: 78.69
+  development_total_usd: 6478746694.0
+  coverage_pct: 100.0
+- rank: 5
+  hs2: '73'
+  description: Articles of iron or steel
+  final_score: 93.25
+  volume_score: 88.52
+  continuity_score: 100.0
+  recent_relevance_score: 90.82
+  forecastability_score: 96.72
+  development_total_usd: 2078967808.0
+  coverage_pct: 100.0
+- rank: 6
+  hs2: '85'
+  description: Electrical machinery and equipment and parts thereof; sound/television
+    recorders and reproducers
+  final_score: 93.21
+  volume_score: 93.44
+  continuity_score: 100.0
+  recent_relevance_score: 94.75
+  forecastability_score: 68.85
+  development_total_usd: 4023873429.0
+  coverage_pct: 100.0
+RU_TR:
+- rank: 1
+  hs2: '27'
+  description: Mineral fuels, mineral oils and products of their distillation; bituminous
+    substances; mineral waxes
+  final_score: 99.02
+  volume_score: 100.0
+  continuity_score: 100.0
+  recent_relevance_score: 100.0
+  forecastability_score: 90.24
+  development_total_usd: 244275005985.0
+  coverage_pct: 100.0
+- rank: 2
+  hs2: '72'
+  description: Iron and steel
+  final_score: 98.15
+  volume_score: 97.56
+  continuity_score: 100.0
+  recent_relevance_score: 98.05
+  forecastability_score: 95.12
+  development_total_usd: 43113837633.0
+  coverage_pct: 100.0
+- rank: 3
+  hs2: '10'
+  description: Cereals
+  final_score: 94.83
+  volume_score: 95.12
+  continuity_score: 100.0
+  recent_relevance_score: 96.1
+  forecastability_score: 75.61
+  development_total_usd: 21182640603.0
+  coverage_pct: 100.0
+- rank: 4
+  hs2: '76'
+  description: Aluminium and articles thereof
+  final_score: 94.29
+  volume_score: 92.68
+  continuity_score: 100.0
+  recent_relevance_score: 92.2
+  forecastability_score: 87.8
+  development_total_usd: 12821599197.0
+  coverage_pct: 100.0
+- rank: 5
+  hs2: '23'
+  description: Residues and waste from the food industries; prepared animal fodder
+  final_score: 91.46
+  volume_score: 85.37
+  continuity_score: 100.0
+  recent_relevance_score: 90.24
+  forecastability_score: 92.68
+  development_total_usd: 5245108836.0
+  coverage_pct: 100.0
+- rank: 6
+  hs2: '74'
+  description: Copper and articles thereof
+  final_score: 90.05
+  volume_score: 90.24
+  continuity_score: 100.0
+  recent_relevance_score: 94.15
+  forecastability_score: 51.22
+  development_total_usd: 8740595885.0
+  coverage_pct: 100.0

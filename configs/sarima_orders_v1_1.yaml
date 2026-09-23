@@ -1,0 +1,296 @@
+spec_version: '1.1'
+sarima_version: 1.1.0
+created_at: '2026-09-22T17:43:29.655379+00:00'
+order_selection_window:
+  start: 2012-01
+  end: 2016-12
+  observations_per_series: 60
+seasonal_period: 12
+search_grid:
+  p:
+  - 0
+  - 1
+  d:
+  - 0
+  - 1
+  q:
+  - 0
+  - 1
+  P:
+  - 0
+  - 1
+  D:
+  - 0
+  - 1
+  Q:
+  - 0
+  - 1
+  s: 12
+  max_candidates_per_series: 64
+  total_candidate_attempts: 896
+selection_criterion:
+  primary: lowest finite aic
+  tie_break_1: lowest finite bic
+  tie_break_2: lowest structural complexity (p+d+q+P+D+Q)
+  tie_break_3: lexicographic tuple (p,d,q,P,D,Q)
+  float_tolerance: 1.0e-08
+trend_policy:
+  rule: trend='c' if d==0 and D==0 else 'n'
+optimizer_policy:
+  primary_optimizer: lbfgs
+  primary_maxiter: 200
+  retry_optimizer: powell
+  retry_maxiter: 500
+series_orders:
+- direction: TR_RU
+  hs2: 08
+  is_total: false
+  order:
+  - 1
+  - 1
+  - 1
+  seasonal_order:
+  - 1
+  - 1
+  - 0
+  - 12
+  trend: n
+  selected_aic: 1698.8389738083604
+  selected_bic: 1706.2395642152005
+  valid_candidate_count: 64
+  failed_candidate_count: 0
+  status: SELECTED
+- direction: TR_RU
+  hs2: '84'
+  is_total: false
+  order:
+  - 0
+  - 1
+  - 0
+  seasonal_order:
+  - 1
+  - 1
+  - 1
+  - 12
+  trend: n
+  selected_aic: 1637.8142260003451
+  selected_bic: 1643.3646688054753
+  valid_candidate_count: 64
+  failed_candidate_count: 0
+  status: SELECTED
+- direction: TR_RU
+  hs2: '39'
+  is_total: false
+  order:
+  - 1
+  - 1
+  - 0
+  seasonal_order:
+  - 1
+  - 1
+  - 1
+  - 12
+  trend: n
+  selected_aic: 1546.1452026664556
+  selected_bic: 1553.5457930732957
+  valid_candidate_count: 64
+  failed_candidate_count: 0
+  status: SELECTED
+- direction: TR_RU
+  hs2: '87'
+  is_total: false
+  order:
+  - 1
+  - 1
+  - 0
+  seasonal_order:
+  - 0
+  - 1
+  - 1
+  - 12
+  trend: n
+  selected_aic: 1696.4819604176816
+  selected_bic: 1702.0324032228118
+  valid_candidate_count: 64
+  failed_candidate_count: 0
+  status: SELECTED
+- direction: TR_RU
+  hs2: '73'
+  is_total: false
+  order:
+  - 1
+  - 1
+  - 0
+  seasonal_order:
+  - 0
+  - 1
+  - 1
+  - 12
+  trend: n
+  selected_aic: 1539.0793834088308
+  selected_bic: 1544.629826213961
+  valid_candidate_count: 64
+  failed_candidate_count: 0
+  status: SELECTED
+- direction: TR_RU
+  hs2: '85'
+  is_total: false
+  order:
+  - 1
+  - 1
+  - 1
+  seasonal_order:
+  - 0
+  - 1
+  - 1
+  - 12
+  trend: n
+  selected_aic: 1614.9213226241995
+  selected_bic: 1622.3219130310397
+  valid_candidate_count: 64
+  failed_candidate_count: 0
+  status: SELECTED
+- direction: TR_RU
+  hs2: TOTAL
+  is_total: true
+  order:
+  - 1
+  - 1
+  - 1
+  seasonal_order:
+  - 0
+  - 1
+  - 0
+  - 12
+  trend: n
+  selected_aic: 1815.327388452478
+  selected_bic: 1820.8778312576082
+  valid_candidate_count: 64
+  failed_candidate_count: 0
+  status: SELECTED
+- direction: RU_TR
+  hs2: '27'
+  is_total: false
+  order:
+  - 1
+  - 1
+  - 0
+  seasonal_order:
+  - 0
+  - 1
+  - 1
+  - 12
+  trend: n
+  selected_aic: 1967.7580515097147
+  selected_bic: 1973.308494314845
+  valid_candidate_count: 63
+  failed_candidate_count: 1
+  status: SELECTED
+- direction: RU_TR
+  hs2: '72'
+  is_total: false
+  order:
+  - 0
+  - 1
+  - 1
+  seasonal_order:
+  - 0
+  - 1
+  - 1
+  - 12
+  trend: n
+  selected_aic: 1833.4832270944228
+  selected_bic: 1839.033669899553
+  valid_candidate_count: 64
+  failed_candidate_count: 0
+  status: SELECTED
+- direction: RU_TR
+  hs2: '10'
+  is_total: false
+  order:
+  - 0
+  - 1
+  - 1
+  seasonal_order:
+  - 0
+  - 1
+  - 1
+  - 12
+  trend: n
+  selected_aic: 1789.0047198796128
+  selected_bic: 1794.555162684743
+  valid_candidate_count: 64
+  failed_candidate_count: 0
+  status: SELECTED
+- direction: RU_TR
+  hs2: '76'
+  is_total: false
+  order:
+  - 1
+  - 1
+  - 1
+  seasonal_order:
+  - 0
+  - 1
+  - 1
+  - 12
+  trend: n
+  selected_aic: 1751.0046348063743
+  selected_bic: 1758.4052252132144
+  valid_candidate_count: 64
+  failed_candidate_count: 0
+  status: SELECTED
+- direction: RU_TR
+  hs2: '23'
+  is_total: false
+  order:
+  - 0
+  - 1
+  - 1
+  seasonal_order:
+  - 0
+  - 1
+  - 1
+  - 12
+  trend: n
+  selected_aic: 1641.6054799537437
+  selected_bic: 1647.1559227588739
+  valid_candidate_count: 64
+  failed_candidate_count: 0
+  status: SELECTED
+- direction: RU_TR
+  hs2: '74'
+  is_total: false
+  order:
+  - 0
+  - 1
+  - 1
+  seasonal_order:
+  - 0
+  - 1
+  - 1
+  - 12
+  trend: n
+  selected_aic: 1723.5782156478176
+  selected_bic: 1729.1286584529478
+  valid_candidate_count: 64
+  failed_candidate_count: 0
+  status: SELECTED
+- direction: RU_TR
+  hs2: TOTAL
+  is_total: true
+  order:
+  - 0
+  - 1
+  - 1
+  seasonal_order:
+  - 0
+  - 1
+  - 1
+  - 12
+  trend: n
+  selected_aic: 2005.742003050439
+  selected_bic: 2011.2924458555692
+  valid_candidate_count: 64
+  failed_candidate_count: 0
+  status: SELECTED

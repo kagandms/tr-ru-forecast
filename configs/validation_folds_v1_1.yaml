@@ -1,0 +1,37 @@
+spec_version: '1.1'
+fold_version: 1.1.0
+created_at: '2026-09-23T15:50:19.493045+00:00'
+development_start: 2012-01
+development_end: 2024-12
+minimum_initial_history_months: 60
+first_validation_origin: 2016-12
+origin_frequency: monthly
+total_folds: 281
+horizons:
+  h1:
+    horizon_months: 1
+    first_origin: 2016-12
+    last_origin: 2024-11
+    number_of_origins: 96
+    first_forecast_period: 2017-01
+    last_forecast_period: 2024-12
+  h3:
+    horizon_months: 3
+    first_origin: 2016-12
+    last_origin: 2024-09
+    number_of_origins: 94
+    first_forecast_period: 2017-03
+    last_forecast_period: 2024-12
+  h6:
+    horizon_months: 6
+    first_origin: 2016-12
+    last_origin: 2024-06
+    number_of_origins: 91
+    first_forecast_period: 2017-06
+    last_forecast_period: 2024-12
+validation_strategy: expanding_walk_forward_rolling_origin
+invariants:
+  source_before_origin: seasonal_source_period <= forecast_origin strictly holds
+  holdout_isolated: forecast_period <= development_end strictly holds
+  train_start_fixed: train_start is fixed at development_start (2012-01)
+  train_end_expanding: train_end equals forecast_origin and expands monthly

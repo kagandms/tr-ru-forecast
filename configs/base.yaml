@@ -1,0 +1,58 @@
+# ==============================================================================
+# Base Configuration Settings
+# TR-RU Bilateral Trade Forecasting & Intelligence Platform
+# ==============================================================================
+
+app:
+  name: "TR-RU Trade Forecasting Platform"
+  version: "0.1.0"
+  env: "development"
+  log_level: "INFO"
+
+trade:
+  directions:
+    - "TR_RU"
+    - "RU_TR"
+  start_period: "2012-01"
+  frequency: "MS"
+  granularity: "HS2"
+
+comtrade:
+  public_url: "https://comtradeapi.un.org/public/v1/preview/C/M/HS"
+  subscription_url: "https://comtradeapi.un.org/data/v1/get/C/M/HS"
+  timeout_seconds: 30.0
+  max_retries: 3
+  rate_limit_delay: 0.5
+  partner2_code: "0"
+  customs_code: "C00"
+  mot_code: "0"
+
+sectors:
+  max_per_direction: 6
+  eligibility:
+    min_history_months: 96
+    min_coverage_pct: 90.0
+    max_zero_ratio_pct: 10.0
+    min_recent_months_observed: 21
+    recent_window_months: 24
+  ranking_weights:
+    volume: 0.40
+    continuity: 0.30
+    recent_relevance: 0.20
+    forecastability: 0.10
+
+forecast:
+  horizons: [1, 3, 6]
+  holdout_months: 12
+  models:
+    mandatory:
+      - "seasonal_naive"
+      - "sarima"
+      - "sarimax"
+      - "xgboost"
+  prediction_intervals: [0.80, 0.95]
+  evaluation:
+    primary_metric: "sMAPE"
+    secondary_metric: "MAE"
+    diagnostic_metric: "RMSE"
+    parsimony_threshold_pct: 2.0
