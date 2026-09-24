@@ -50,7 +50,7 @@ Verifies all 50 critical requirements from Milestone M5 specification:
 47. macro source registry unchanged.
 48. no scaler fitted.
 49. no model trained.
-50. no M6+ artifacts created.
+50. no M9+ artifacts created.
 """
 
 import numpy as np
@@ -608,15 +608,15 @@ def test_49_no_model_trained():
     assert len(trained_files) == 0, f"Found unexpected trained model files: {trained_files}"
 
 
-# 50. no M6+ artifacts created
-def test_50_no_m6_plus_artifacts_created():
+# 50. no M9+ artifacts created
+def test_50_no_m9_plus_artifacts_created():
     settings = get_settings()
-    # Check that no seasonal naive, sarima, or evaluation tables exist
+    # Check that no M9+ (XGBoost, champion selection, holdout) artifacts exist
     forbidden_files = [
-        settings.processed_data_dir / "seasonal_naive_forecasts.parquet",
-        settings.processed_data_dir / "sarima_forecasts.parquet",
-        settings.processed_data_dir / "model_evaluation_metrics.parquet",
-        settings.project_root / "docs" / "M8_SARIMAX_REPORT.md",
+        settings.processed_data_dir / "m9_xgboost_predictions.parquet",
+        settings.processed_data_dir / "m9_xgboost_metrics.parquet",
+        settings.processed_data_dir / "m10_champion_selection.parquet",
+        settings.project_root / "docs" / "M9_XGBOOST_REPORT.md",
     ]
     for p in forbidden_files:
-        assert not p.exists(), f"Forbidden M6+ artifact exists: {p}"
+        assert not p.exists(), f"Forbidden M9+ artifact exists: {p}"

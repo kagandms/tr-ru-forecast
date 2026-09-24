@@ -64,9 +64,9 @@ Verifies all 68 critical requirements from Milestone M7 specification:
 61. no macro features used.
 62. no scaling.
 63. no champion selection.
-64. no SARIMAX implementation.
+64. no champion selection implementation.
 65. no XGBoost implementation.
-66. no M8+ artifacts.
+66. no M9+ artifacts.
 67. frozen prior manifests remain intact.
 68. lint clean.
 """
@@ -723,10 +723,10 @@ def test_63_no_champion_selection(sarima_pipeline_results):
     assert "is_champion" not in metrics_df.columns
 
 
-# 64. no SARIMAX implementation
-def test_64_no_sarimax_implementation():
+# 64. no champion selection implementation
+def test_64_no_champion_selection_implementation():
     settings = get_settings()
-    assert not (settings.processed_data_dir / "m8_sarimax_predictions.parquet").exists()
+    assert not (settings.processed_data_dir / "m10_champion_selection.parquet").exists()
 
 
 # 65. no XGBoost implementation
@@ -735,11 +735,11 @@ def test_65_no_xgboost_implementation():
     assert not (settings.processed_data_dir / "m9_xgboost_predictions.parquet").exists()
 
 
-# 66. no M8+ artifacts
-def test_66_no_m8_plus_artifacts():
+# 66. no M9+ artifacts
+def test_66_no_m9_plus_artifacts():
     settings = get_settings()
-    assert not (settings.project_root / "docs" / "M8_SARIMAX_REPORT.md").exists()
     assert not (settings.project_root / "docs" / "M9_XGBOOST_REPORT.md").exists()
+    assert not (settings.project_root / "docs" / "M10_CHAMPION_SELECTION_REPORT.md").exists()
 
 
 # 67. frozen prior manifests remain intact

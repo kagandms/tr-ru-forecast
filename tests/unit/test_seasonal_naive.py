@@ -46,10 +46,10 @@ Verifies all 50 critical requirements from Milestone M6 specification:
 43. no scaling occurs.
 44. no hyperparameter tuning occurs.
 45. no model selection occurs.
-46. no SARIMA artifacts created.
-47. no SARIMAX artifacts created.
+46. no champion selection artifacts created.
+47. no M11 holdout artifacts created.
 48. no XGBoost artifacts created.
-49. no M7+ implementation exists.
+49. no M9+ implementation exists.
 50. lint/test commands remain clean.
 """
 
@@ -523,18 +523,18 @@ def test_45_no_model_selection(pipeline_results):
     assert "is_champion" not in metrics_df.columns
 
 
-# 46. no SARIMAX artifacts created
-def test_46_no_sarimax_predictions_created():
+# 46. no champion selection artifacts created
+def test_46_no_champion_selection_artifacts_created():
     settings = get_settings()
-    assert not (settings.processed_data_dir / "m8_sarimax_predictions.parquet").exists()
-    assert not (settings.processed_data_dir / "m8_sarimax_metrics.parquet").exists()
+    assert not (settings.processed_data_dir / "m10_champion_selection.parquet").exists()
+    assert not (settings.processed_data_dir / "m10_champion_metrics.parquet").exists()
 
 
-# 47. no SARIMAX artifacts created
-def test_47_no_sarimax_artifacts_created():
+# 47. no M11 holdout artifacts created
+def test_47_no_m11_holdout_artifacts_created():
     settings = get_settings()
-    assert not (settings.processed_data_dir / "m8_sarimax_predictions.parquet").exists()
-    assert not (settings.processed_data_dir / "m8_sarimax_metrics.parquet").exists()
+    assert not (settings.processed_data_dir / "m11_holdout_predictions.parquet").exists()
+    assert not (settings.processed_data_dir / "m11_holdout_metrics.parquet").exists()
 
 
 # 48. no XGBoost artifacts created
@@ -544,12 +544,12 @@ def test_48_no_xgboost_artifacts_created():
     assert not (settings.processed_data_dir / "m9_xgboost_metrics.parquet").exists()
 
 
-# 49. no M8+ implementation exists
-def test_49_no_m8_plus_implementation_exists():
+# 49. no M9+ implementation exists
+def test_49_no_m9_plus_implementation_exists():
     settings = get_settings()
     # Check docs for future milestone reports
-    assert not (settings.project_root / "docs" / "M8_SARIMAX_REPORT.md").exists()
     assert not (settings.project_root / "docs" / "M9_XGBOOST_REPORT.md").exists()
+    assert not (settings.project_root / "docs" / "M10_CHAMPION_SELECTION_REPORT.md").exists()
 
 
 # 50. lint/test commands remain clean
