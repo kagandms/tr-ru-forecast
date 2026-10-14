@@ -77,6 +77,33 @@ def sarimax_pipeline_results():
 
 
 @pytest.fixture(scope="module")
+def fresh_unmutated_sarimax_results():
+    """Module-scoped fresh unmutated SARIMAX execution in current runtime.
+
+    Provides the exact current-runtime baseline for mutation invariance tests,
+    ensuring cross-BLAS runtime drift is not conflated with future-data leakage.
+    """
+    settings = get_settings()
+    macro_df = pd.read_parquet(settings.processed_data_dir / "macro_monthly.parquet")
+    target_df = pd.read_parquet(settings.processed_data_dir / "forecast_target_monthly.parquet")
+    with open(settings.project_root / "configs" / "selected_sectors_v1_1.yaml") as f:
+        sectors_manifest = yaml.safe_load(f)
+
+    dev_unmut, _ = build_development_features(target_df, macro_df, sectors_manifest)
+
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
+        unmut_preds, unmut_metrics, unmut_diags, unmut_fit_log, unmut_audit, unmut_meta = run_sarimax_pipeline(
+            run_id="test_fresh_unmutated_baseline",
+            feature_df=dev_unmut,
+            macro_df=macro_df,
+            output_dir=tmp_path,
+            save_artifacts=False,
+        )
+        return dev_unmut, unmut_preds, unmut_metrics, unmut_diags, unmut_fit_log, unmut_audit, unmut_meta
+
+
+@pytest.fixture(scope="module")
 def macro_mutation_results():
     """Module-scoped upstream 2025 macroeconomic mutation test fixture.
 
@@ -355,8 +382,8 @@ def test_13_future_macro_mutation_gate():
 
 
 # 14. Complete 2025 macro quarantine gate (upstream end-to-end mutation test)
-def test_14_complete_2025_macro_quarantine(sarimax_pipeline_results, macro_mutation_results):
-    can_preds, can_metrics, can_diags, can_fit_log, can_audit, can_meta = sarimax_pipeline_results
+def test_14_complete_2025_macro_quarantine(fresh_unmutated_sarimax_results, macro_mutation_results):
+    _, unmut_preds, unmut_metrics, unmut_diags, unmut_fit_log, unmut_audit, unmut_meta = fresh_unmutated_sarimax_results
     dev_rebuilt, mut_preds, mut_metrics, mut_diags, mut_fit_log, mut_audit, mut_meta = macro_mutation_results
     settings = get_settings()
 
@@ -365,50 +392,50 @@ def test_14_complete_2025_macro_quarantine(sarimax_pipeline_results, macro_mutat
     pd.testing.assert_frame_equal(can_dev_features, dev_rebuilt)
 
     # Exact fold definitions and fold IDs
-    pd.testing.assert_series_equal(can_preds["fold_id"], mut_preds["fold_id"])
+    pd.testing.assert_series_equal(unmut_preds["fold_id"], mut_preds["fold_id"])
 
     # Origin snapshot dates
     pd.testing.assert_series_equal(
-        can_audit["canonical_origin_snapshot_date"],
+        unmut_audit["canonical_origin_snapshot_date"],
         mut_audit["canonical_origin_snapshot_date"],
     )
 
     # Origin-known exogenous vectors
-    pd.testing.assert_series_equal(can_audit["value_used"], mut_audit["value_used"])
+    pd.testing.assert_series_equal(unmut_audit["value_used"], mut_audit["value_used"])
 
     # Future persistence exog paths
     assert (mut_preds["exog_strategy"] == "origin_known_persistence").all()
-    pd.testing.assert_series_equal(can_preds["exog_strategy"], mut_preds["exog_strategy"])
+    pd.testing.assert_series_equal(unmut_preds["exog_strategy"], mut_preds["exog_strategy"])
 
     # All 3,934 point predictions
     pd.testing.assert_series_equal(
-        can_preds["prediction"],
+        unmut_preds["prediction"],
         mut_preds["prediction"],
         rtol=1e-5,
         atol=1e-5,
     )
 
     # All 80% and 95% interval bounds
-    pd.testing.assert_series_equal(can_preds["lower_80"], mut_preds["lower_80"], rtol=1e-5, atol=1e-5)
-    pd.testing.assert_series_equal(can_preds["upper_80"], mut_preds["upper_80"], rtol=1e-5, atol=1e-5)
-    pd.testing.assert_series_equal(can_preds["lower_95"], mut_preds["lower_95"], rtol=1e-5, atol=1e-5)
-    pd.testing.assert_series_equal(can_preds["upper_95"], mut_preds["upper_95"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_preds["lower_80"], mut_preds["lower_80"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_preds["upper_80"], mut_preds["upper_80"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_preds["lower_95"], mut_preds["lower_95"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_preds["upper_95"], mut_preds["upper_95"], rtol=1e-5, atol=1e-5)
 
     # All 42 metric rows and metric values
-    pd.testing.assert_series_equal(can_metrics["smape"], mut_metrics["smape"], rtol=1e-5, atol=1e-5)
-    pd.testing.assert_series_equal(can_metrics["mae"], mut_metrics["mae"], rtol=1e-5, atol=1e-5)
-    pd.testing.assert_series_equal(can_metrics["rmse"], mut_metrics["rmse"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_metrics["smape"], mut_metrics["smape"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_metrics["mae"], mut_metrics["mae"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_metrics["rmse"], mut_metrics["rmse"], rtol=1e-5, atol=1e-5)
 
     # Fit and failure counts
-    assert len(mut_fit_log) == len(can_fit_log) == 1344
+    assert len(mut_fit_log) == len(unmut_fit_log) == 1344
     assert (mut_fit_log["fit_status"] == "SUCCESS").sum() == 1344
     assert (mut_fit_log["fit_status"] != "SUCCESS").sum() == 0
     assert mut_fit_log["converged"].all()
 
 
 # 15. 2025 trade-target isolation gate (upstream end-to-end mutation test)
-def test_15_2025_trade_target_isolation(sarimax_pipeline_results, target_mutation_results):
-    can_preds, can_metrics, can_diags, can_fit_log, can_audit, can_meta = sarimax_pipeline_results
+def test_15_2025_trade_target_isolation(fresh_unmutated_sarimax_results, target_mutation_results):
+    _, unmut_preds, unmut_metrics, unmut_diags, unmut_fit_log, unmut_audit, unmut_meta = fresh_unmutated_sarimax_results
     dev_rebuilt, mut_preds, mut_metrics, mut_diags, mut_fit_log, mut_audit, mut_meta = target_mutation_results
     settings = get_settings()
 
@@ -417,40 +444,40 @@ def test_15_2025_trade_target_isolation(sarimax_pipeline_results, target_mutatio
     pd.testing.assert_frame_equal(can_dev_features, dev_rebuilt)
 
     # Frozen 281 fold definitions
-    pd.testing.assert_series_equal(can_preds["fold_id"], mut_preds["fold_id"])
+    pd.testing.assert_series_equal(unmut_preds["fold_id"], mut_preds["fold_id"])
 
     # Origin exogenous audit/path
     pd.testing.assert_frame_equal(
-        can_audit.drop(columns=["created_at"]),
+        unmut_audit.drop(columns=["created_at"]),
         mut_audit.drop(columns=["created_at"]),
     )
 
     # All 3,934 point predictions
     pd.testing.assert_series_equal(
-        can_preds["prediction"],
+        unmut_preds["prediction"],
         mut_preds["prediction"],
         rtol=1e-5,
         atol=1e-5,
     )
 
     # 80% and 95% intervals
-    pd.testing.assert_series_equal(can_preds["lower_80"], mut_preds["lower_80"], rtol=1e-5, atol=1e-5)
-    pd.testing.assert_series_equal(can_preds["upper_80"], mut_preds["upper_80"], rtol=1e-5, atol=1e-5)
-    pd.testing.assert_series_equal(can_preds["lower_95"], mut_preds["lower_95"], rtol=1e-5, atol=1e-5)
-    pd.testing.assert_series_equal(can_preds["upper_95"], mut_preds["upper_95"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_preds["lower_80"], mut_preds["lower_80"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_preds["upper_80"], mut_preds["upper_80"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_preds["lower_95"], mut_preds["lower_95"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_preds["upper_95"], mut_preds["upper_95"], rtol=1e-5, atol=1e-5)
 
     # All 42 validation metric groups
-    pd.testing.assert_series_equal(can_metrics["smape"], mut_metrics["smape"], rtol=1e-5, atol=1e-5)
-    pd.testing.assert_series_equal(can_metrics["mae"], mut_metrics["mae"], rtol=1e-5, atol=1e-5)
-    pd.testing.assert_series_equal(can_metrics["rmse"], mut_metrics["rmse"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_metrics["smape"], mut_metrics["smape"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_metrics["mae"], mut_metrics["mae"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_metrics["rmse"], mut_metrics["rmse"], rtol=1e-5, atol=1e-5)
 
     # Residual diagnostics
-    pd.testing.assert_series_equal(can_diags["residual_mean"], mut_diags["residual_mean"], rtol=1e-5, atol=1e-5)
-    pd.testing.assert_series_equal(can_diags["residual_std"], mut_diags["residual_std"], rtol=1e-5, atol=1e-5)
-    pd.testing.assert_series_equal(can_diags["ljung_box_pvalue"], mut_diags["ljung_box_pvalue"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_diags["residual_mean"], mut_diags["residual_mean"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_diags["residual_std"], mut_diags["residual_std"], rtol=1e-5, atol=1e-5)
+    pd.testing.assert_series_equal(unmut_diags["ljung_box_pvalue"], mut_diags["ljung_box_pvalue"], rtol=1e-5, atol=1e-5)
 
     # Fit and failure counts
-    assert len(mut_fit_log) == len(can_fit_log) == 1344
+    assert len(mut_fit_log) == len(unmut_fit_log) == 1344
     assert (mut_fit_log["fit_status"] == "SUCCESS").sum() == 1344
     assert (mut_fit_log["fit_status"] != "SUCCESS").sum() == 0
     assert mut_fit_log["converged"].all()
@@ -515,12 +542,14 @@ def test_20_no_champion_selection(sarimax_pipeline_results):
     assert "is_champion" not in metrics_df.columns
 
 
-# 21. No M9+ artifacts exist
-def test_21_no_m9_plus_artifacts():
+# 21. No M10+ artifacts exist
+def test_21_no_m10_plus_artifacts():
     settings = get_settings()
-    assert not (settings.processed_data_dir / "m9_xgboost_predictions.parquet").exists()
-    assert not (settings.processed_data_dir / "m9_xgboost_metrics.parquet").exists()
-    assert not (settings.project_root / "docs" / "M9_XGBOOST_REPORT.md").exists()
+    assert not (settings.processed_data_dir / "m10_champion_selection.parquet").exists()
+    assert not (settings.processed_data_dir / "m11_holdout_predictions.parquet").exists()
+    assert not (settings.project_root / "docs" / "M10_CHAMPION_SELECTION_REPORT.md").exists()
+    assert not (settings.project_root / "docs" / "M11_HOLDOUT_REPORT.md").exists()
+
 
 
 # 22. Snapshot-date semantics audit (exact agreement between M5 and M8)

@@ -81,6 +81,28 @@ from tr_ru_forecast.models.baselines.pipeline import (
 from tr_ru_forecast.models.baselines.seasonal_naive import SeasonalNaivePredictor
 
 
+@pytest.fixture(autouse=True, scope="module")
+def isolate_validation_registry_writes(tmp_path_factory):
+    """Prevent tests from rewriting tracked configs/validation_folds_v1_1.yaml."""
+    from _pytest.monkeypatch import MonkeyPatch
+
+    mp = MonkeyPatch()
+    temp_dir = tmp_path_factory.mktemp("validation_registry_isolation")
+    temp_yaml = temp_dir / "validation_folds_v1_1.yaml"
+    temp_parquet = temp_dir / "validation_origins.parquet"
+
+    from tr_ru_forecast.evaluation import splits
+
+    orig_save = splits.save_validation_registry
+
+    def safe_save(folds_df, yaml_path, parquet_path):
+        return orig_save(folds_df, temp_yaml, temp_parquet)
+
+    mp.setattr("tr_ru_forecast.models.baselines.pipeline.save_validation_registry", safe_save)
+    yield
+    mp.undo()
+
+
 @pytest.fixture(scope="module")
 def pipeline_results():
     """Run Seasonal Naive pipeline once for test module."""
@@ -537,19 +559,18 @@ def test_47_no_m11_holdout_artifacts_created():
     assert not (settings.processed_data_dir / "m11_holdout_metrics.parquet").exists()
 
 
-# 48. no XGBoost artifacts created
-def test_48_no_xgboost_artifacts_created():
+# 48. no champion selection artifacts created
+def test_48_no_champion_selection_artifacts_created():
     settings = get_settings()
-    assert not (settings.processed_data_dir / "m9_xgboost_predictions.parquet").exists()
-    assert not (settings.processed_data_dir / "m9_xgboost_metrics.parquet").exists()
+    assert not (settings.processed_data_dir / "m10_champion_selection.parquet").exists()
+    assert not (settings.processed_data_dir / "m10_champion_metrics.parquet").exists()
 
 
-# 49. no M9+ implementation exists
-def test_49_no_m9_plus_implementation_exists():
+# 49. no M10+ implementation exists
+def test_49_no_m10_plus_implementation_exists():
     settings = get_settings()
-    # Check docs for future milestone reports
-    assert not (settings.project_root / "docs" / "M9_XGBOOST_REPORT.md").exists()
     assert not (settings.project_root / "docs" / "M10_CHAMPION_SELECTION_REPORT.md").exists()
+    assert not (settings.project_root / "docs" / "M11_HOLDOUT_REPORT.md").exists()
 
 
 # 50. lint/test commands remain clean
@@ -557,3 +578,23 @@ def test_50_test_count_and_clean_run(pipeline_results):
     pred_df, metrics_df, _ = pipeline_results
     assert len(pred_df) == 3934
     assert len(metrics_df) == 42
+
+
+# 51. canonical validation folds manifest remains byte-identical
+def test_51_canonical_validation_folds_manifest_byte_identical():
+    """Verify configs/validation_folds_v1_1.yaml has not been modified by tests."""
+    import hashlib
+
+    settings = get_settings()
+    yaml_path = settings.project_root / "configs" / "validation_folds_v1_1.yaml"
+    assert yaml_path.exists()
+    with open(yaml_path, encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+    assert data["total_folds"] == 281
+    assert data["horizons"]["h1"]["number_of_origins"] == 96
+    assert data["horizons"]["h3"]["number_of_origins"] == 94
+    assert data["horizons"]["h6"]["number_of_origins"] == 91
+
+    with open(yaml_path, "rb") as f:
+        sha256 = hashlib.sha256(f.read()).hexdigest()
+    assert sha256 == "0dc666c284991d494575a44cba18a2d93be2b3195bca01e8ae01a9f7191cded3"

@@ -207,7 +207,7 @@ Key empirical observations:
 2. **Conditional Prediction Intervals**: Native SARIMAX intervals condition on that exogenous path and therefore do not represent uncertainty in the future macro trajectory itself.
 3. **No Causal Assertions**: Exogenous coefficients represent statistical association under simultaneous equations in statespace form; they do not imply structural causal effects.
 4. **No Champion Selection**: Model comparison is strictly descriptive. Formal champion determination will be executed under the frozen M10 decision rules.
-5. **Holdout Quarantine**: Calendar year 2025 (`2025-01` to `2025-12`) was strictly sealed and never accessed.
+5. **M8 Run Boundary**: This M8 run uses the frozen development/validation inputs and does not score 2025 outcomes. This statement does not establish that no earlier project workflow accessed 2025 data.
 
 ---
 
@@ -237,9 +237,9 @@ Key empirical observations:
 - [x] Future-macro mutation test passes
 - [x] 2025 macro quarantine test passes
 - [x] 2025 target mutation test passes
-- [x] Full pytest test suite passes cleanly
+- [ ] Full pytest suite independently verified in an isolated checkout (historical report claim not treated as current evidence)
 - [x] Ruff linter passes cleanly (0 errors)
-- [x] M9+ work strictly prohibited
+- [x] M9+ work was outside the scope of the original M8 run
 
 ---
 

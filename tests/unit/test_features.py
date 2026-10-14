@@ -608,15 +608,15 @@ def test_49_no_model_trained():
     assert len(trained_files) == 0, f"Found unexpected trained model files: {trained_files}"
 
 
-# 50. no M9+ artifacts created
-def test_50_no_m9_plus_artifacts_created():
+# 50. no M10+ artifacts created
+def test_50_no_m10_plus_artifacts_created():
     settings = get_settings()
-    # Check that no M9+ (XGBoost, champion selection, holdout) artifacts exist
+    # Check that no M10+ (champion selection, holdout) artifacts exist
     forbidden_files = [
-        settings.processed_data_dir / "m9_xgboost_predictions.parquet",
-        settings.processed_data_dir / "m9_xgboost_metrics.parquet",
         settings.processed_data_dir / "m10_champion_selection.parquet",
-        settings.project_root / "docs" / "M9_XGBOOST_REPORT.md",
+        settings.processed_data_dir / "m11_holdout_predictions.parquet",
+        settings.project_root / "docs" / "M10_CHAMPION_SELECTION_REPORT.md",
+        settings.project_root / "docs" / "M11_HOLDOUT_REPORT.md",
     ]
     for p in forbidden_files:
-        assert not p.exists(), f"Forbidden M9+ artifact exists: {p}"
+        assert not p.exists(), f"Forbidden M10+ artifact exists: {p}"

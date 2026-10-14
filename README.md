@@ -6,9 +6,9 @@ Research-oriented economic intelligence platform analyzing bilateral trade flows
 
 ## 1. Project Status & Milestone
 
-- **Current Milestone:** `M1 — Trade Data Ingestion`
-- **Specification Status:** `SPECIFICATION FREEZE v1.0`
-- **Phase:** UN Comtrade bilateral trade ingestion pipeline, parameter serialization, deterministic deduplication, raw snapshot storage, and standardized `trade_monthly` datasets implemented. No M2+ business logic.
+- **Current Milestone:** `M9 — XGBoost development validation; acceptance in progress`
+- **Specification Status:** `Specification Pack v1.1`
+- **Phase:** Data pipelines, 14 frozen target series, feature engineering, four development validation models, and the direct XGBoost implementation are present. M9 artifacts require reproducibility acceptance; champion selection and the final 2025 holdout remain unstarted. The API and dashboard are still skeletal.
 
 ---
 
@@ -52,17 +52,17 @@ Next.js Multi-language Dashboard (TR / EN / RU)
 
 ```text
 tr-ru_forecast/
-├── specification/             # Verbatim frozen specification documents (v1.0)
+├── specification/             # Frozen v1.1 project, data, and experiment contracts
 ├── src/
 │   └── tr_ru_forecast/        # Core Python package
 │       ├── core/              # Frozen constants and central structured logging
 │       ├── config/            # Pydantic Settings and path resolution
-│       ├── data/              # Ingestion, quality, and storage modules (skeletons)
-│       ├── features/          # Feature engineering modules (skeletons)
-│       ├── models/            # Baselines, classical, and ML model modules (skeletons)
-│       └── evaluation/        # Validation, metrics, and champion selection (skeletons)
-├── api/                       # FastAPI application entrypoint (minimal /health skeleton)
-├── frontend/                  # Next.js frontend skeleton (localized TR/EN/RU architecture)
+│       ├── data/              # Trade/macro ingestion, quality, and storage
+│       ├── features/          # Target and development feature pipelines
+│       ├── models/            # Baseline, SARIMA/SARIMAX, and XGBoost models
+│       └── evaluation/        # Metrics, folds, and validation; champion selection pending
+├── api/                       # FastAPI entrypoint; product data endpoints pending
+├── frontend/                  # Next.js app; forecasting dashboard pending
 ├── tests/                     # Test suite (unit, API integration, smoke tests)
 │   ├── unit/                  # Settings and logging unit tests
 │   └── api/                   # FastAPI health and root endpoint tests
@@ -74,7 +74,8 @@ tr-ru_forecast/
 ├── docs/                      # Technical documentation
 ├── .env.example               # Environment variables template
 ├── .gitignore                 # Standard ignore file for Python, Node, data, and secrets
-├── pyproject.toml             # Python package build configuration and tool settings
+├── pyproject.toml             # Python package, runtime dependencies, and dev extra
+├── uv.lock                    # Resolved Python dependency graph
 ├── Makefile                   # Convenient developer commands
 └── README.md                  # Project documentation
 ```
@@ -110,10 +111,12 @@ make run-api
 make run-frontend
 ```
 
+For a locked Python environment, use `uv sync --locked --extra dev` from the repository root. `uv.lock` records the resolved runtime and development dependency graph.
+
 ### Option B: Manual Setup
 
 ```bash
-# 1. Python environment setup
+# 1. Python environment setup (version ranges, not lockfile-enforced)
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip

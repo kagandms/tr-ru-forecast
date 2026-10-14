@@ -729,17 +729,18 @@ def test_64_no_champion_selection_implementation():
     assert not (settings.processed_data_dir / "m10_champion_selection.parquet").exists()
 
 
-# 65. no XGBoost implementation
-def test_65_no_xgboost_implementation():
+# 65. no champion selection implementation
+def test_65_no_champion_selection_implementation():
     settings = get_settings()
-    assert not (settings.processed_data_dir / "m9_xgboost_predictions.parquet").exists()
+    assert not (settings.processed_data_dir / "m10_champion_selection.parquet").exists()
 
 
-# 66. no M9+ artifacts
-def test_66_no_m9_plus_artifacts():
+# 66. no M10+ artifacts
+def test_66_no_m10_plus_artifacts():
     settings = get_settings()
-    assert not (settings.project_root / "docs" / "M9_XGBOOST_REPORT.md").exists()
     assert not (settings.project_root / "docs" / "M10_CHAMPION_SELECTION_REPORT.md").exists()
+    assert not (settings.project_root / "docs" / "M11_HOLDOUT_REPORT.md").exists()
+
 
 
 # 67. frozen prior manifests remain intact

@@ -1,10 +1,10 @@
-# M4 — MACRO DATA FOUNDATION REPORT (REVISION GATE)
+# M4 — MACRO DATA FOUNDATION REPORT (REVISION GATE R2 RESOLVED)
 
 **Document Version:** 1.1.1 (Revision Gate)  
 **Execution Date:** 2026-09-22T16:48:00.249700+00:00  
 **Authoritative Specification:** Specification Pack v1.1 (`specification/`)  
 **Author:** Senior Data Engineer & Economic Data Research Engineer  
-**Status:** **REVISION GATE — BLOCKED ON RU IP LINKAGE DECISION**  
+**Status:** **R2 IMPLEMENTATION RESOLVED; HISTORICAL VINTAGE LIMITATION REMAINS**
 
 ---
 
@@ -147,10 +147,12 @@ To prevent future-information leakage, every observation is explicitly assigned 
 
 ```
 ================================================================================
-MILESTONE M4 REVISION GATE R2 VERDICT:
+MILESTONE M4 REVISION GATE R2 IMPLEMENTATION VERDICT:
 TR IP: RESOLVED (Official TÜİK 2021=100 series via Eurostat STS, 100% coverage)
 RU IP: RESOLVED & VERIFIED (Option A Multiplicative Overlap Linkage, k=1.212809, switch 2022-01)
 FX PROVENANCE & ORIENTATION: RESOLVED (OECD/FRED, IMF/FRED, RUB per 1 USD)
-STATUS: READY FOR EXTERNAL RE-REVIEW
+STATUS: IMPLEMENTATION RESOLVED; EXTERNAL REVIEW NOT RECORDED HERE
 ================================================================================
 ```
+
+Historical macro values use the latest available vintage with conservative approximate publication dates. This report establishes the implemented linkage and as-of filtering contract, not point-in-time vintage fidelity or exact real-time decision availability.
