@@ -1,0 +1,7 @@
+{
+  "health_timestamp": "omitted because it is request-time liveness metadata",
+  "schema_version": 1,
+  "scope": "retrospective_latest_vintage_holdout_evaluation_under_deterministic_lag_rules",
+  "snapshot_file": "snapshot.json",
+  "snapshot_sha256": "867a3d8230ca62c23a2f7bc4e7021e0f9f8eba0fe8a727469f1c11b07bebf574"
+}
