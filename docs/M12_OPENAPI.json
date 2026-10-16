@@ -1,0 +1,3529 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "TR-RU Bilateral Trade Forecasting API",
+    "description": "Read-only frozen retrospective evaluation and mirror analytics.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Root",
+        "description": "Return service identity. Args: none. Returns: identity. Raises: none.",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RootResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Health",
+        "description": "Return liveness and verified snapshot readiness; degraded snapshots return 503.",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Health",
+        "description": "Return liveness and verified snapshot readiness; degraded snapshots return 503.",
+        "operationId": "health_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sectors": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "Sectors",
+        "description": "Return all selected series with source metadata and horizon assignments.",
+        "operationId": "sectors_api_v1_sectors_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SectorCatalog"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/metrics": {
+      "get": {
+        "tags": [
+          "Models"
+        ],
+        "summary": "Leaderboard",
+        "description": "Return filtered CV/holdout comparisons and global unfiltered KPIs.",
+        "operationId": "leaderboard_api_v1_metrics_get",
+        "parameters": [
+          {
+            "name": "direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "TR_RU",
+                    "RU_TR"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Direction"
+            }
+          },
+          {
+            "name": "hs2",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Hs2"
+            }
+          },
+          {
+            "name": "horizon",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    1,
+                    3,
+                    6
+                  ],
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Horizon"
+            }
+          },
+          {
+            "name": "champion_model",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "sarima",
+                    "xgboost"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Champion Model"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeaderboardResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/leaderboard": {
+      "get": {
+        "tags": [
+          "Models"
+        ],
+        "summary": "Leaderboard",
+        "description": "Return filtered CV/holdout comparisons and global unfiltered KPIs.",
+        "operationId": "leaderboard_api_v1_leaderboard_get",
+        "parameters": [
+          {
+            "name": "direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "TR_RU",
+                    "RU_TR"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Direction"
+            }
+          },
+          {
+            "name": "hs2",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Hs2"
+            }
+          },
+          {
+            "name": "horizon",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    1,
+                    3,
+                    6
+                  ],
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Horizon"
+            }
+          },
+          {
+            "name": "champion_model",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "sarima",
+                    "xgboost"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Champion Model"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeaderboardResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/forecasts/{sector_id}": {
+      "get": {
+        "tags": [
+          "Forecasts"
+        ],
+        "summary": "Forecasts",
+        "description": "Return historical context and twelve retrospective targets per selected horizon.",
+        "operationId": "forecasts_api_v1_forecasts__sector_id__get",
+        "parameters": [
+          {
+            "name": "sector_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sector Id"
+            }
+          },
+          {
+            "name": "horizon",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    1,
+                    3,
+                    6
+                  ],
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Horizon"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/forecasts": {
+      "get": {
+        "tags": [
+          "Forecasts"
+        ],
+        "summary": "Forecast Query",
+        "description": "Return forecasts through the equivalent query-form sector/horizon selection.",
+        "operationId": "forecast_query_api_v1_forecasts_get",
+        "parameters": [
+          {
+            "name": "horizon",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    1,
+                    3,
+                    6
+                  ],
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Horizon"
+            }
+          },
+          {
+            "name": "sector_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sector Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForecastResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/explainability/{sector_id}": {
+      "get": {
+        "tags": [
+          "Explainability"
+        ],
+        "summary": "Explainability",
+        "description": "Return global importance and local SHAP only for a registered XGBoost role.",
+        "operationId": "explainability_api_v1_explainability__sector_id__get",
+        "parameters": [
+          {
+            "name": "sector_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sector Id"
+            }
+          },
+          {
+            "name": "horizon",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "enum": [
+                1,
+                3,
+                6
+              ],
+              "type": "integer",
+              "title": "Horizon"
+            }
+          },
+          {
+            "name": "target_month",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^2025-(0[1-9]|1[0-2])$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Target Month"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/AvailableExplanation"
+                    },
+                    {
+                      "$ref": "#/components/schemas/UnavailableExplanation"
+                    }
+                  ],
+                  "discriminator": {
+                    "propertyName": "status",
+                    "mapping": {
+                      "available": "#/components/schemas/AvailableExplanation",
+                      "unavailable": "#/components/schemas/UnavailableExplanation"
+                    }
+                  },
+                  "title": "Response Explainability Api V1 Explainability  Sector Id  Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/mirror": {
+      "get": {
+        "tags": [
+          "Mirror"
+        ],
+        "summary": "Mirror",
+        "description": "Return exporter/importer gaps, provenance and honest post-2022 availability.",
+        "operationId": "mirror_api_v1_mirror_get",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 10000,
+              "minimum": 1,
+              "default": 1000,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "start_month",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start Month"
+            }
+          },
+          {
+            "name": "end_month",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End Month"
+            }
+          },
+          {
+            "name": "sector_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sector Id"
+            }
+          },
+          {
+            "name": "hs2",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Hs2"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "TR_RU",
+                    "RU_TR"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Direction"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MirrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/mirror-analytics": {
+      "get": {
+        "tags": [
+          "Mirror"
+        ],
+        "summary": "Mirror",
+        "description": "Return exporter/importer gaps, provenance and honest post-2022 availability.",
+        "operationId": "mirror_api_v1_mirror_analytics_get",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 10000,
+              "minimum": 1,
+              "default": 1000,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "start_month",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start Month"
+            }
+          },
+          {
+            "name": "end_month",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End Month"
+            }
+          },
+          {
+            "name": "sector_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sector Id"
+            }
+          },
+          {
+            "name": "hs2",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Hs2"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "TR_RU",
+                    "RU_TR"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Direction"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MirrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/trade": {
+      "get": {
+        "tags": [
+          "Trade"
+        ],
+        "summary": "Trade",
+        "description": "Return bounded official forecast-target history with source precision.",
+        "operationId": "trade_api_v1_trade_get",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 10000,
+              "minimum": 1,
+              "default": 1000,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "start_month",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start Month"
+            }
+          },
+          {
+            "name": "end_month",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End Month"
+            }
+          },
+          {
+            "name": "sector_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Sector Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TradeResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/indicators": {
+      "get": {
+        "tags": [
+          "Indicators"
+        ],
+        "summary": "Indicators",
+        "description": "Return bounded macro observations with their release-lag metadata.",
+        "operationId": "indicators_api_v1_indicators_get",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 10000,
+              "minimum": 1,
+              "default": 1000,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "start_month",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Start Month"
+            }
+          },
+          {
+            "name": "end_month",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "End Month"
+            }
+          },
+          {
+            "name": "indicator_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Indicator Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IndicatorsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Content"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/methodology": {
+      "get": {
+        "tags": [
+          "Methodology"
+        ],
+        "summary": "Methodology",
+        "description": "Return target policy, scope limitations and provenance digests.",
+        "operationId": "methodology_api_v1_methodology_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MethodologyResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/overview": {
+      "get": {
+        "tags": [
+          "Overview"
+        ],
+        "summary": "Overview",
+        "description": "Return aligned TOTAL-only aggregates and global KPIs.",
+        "operationId": "overview_api_v1_overview_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverviewResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ArtifactReadiness": {
+        "properties": {
+          "m10": {
+            "type": "boolean",
+            "title": "M10"
+          },
+          "m11": {
+            "type": "boolean",
+            "title": "M11"
+          },
+          "history": {
+            "type": "boolean",
+            "title": "History"
+          },
+          "mirror": {
+            "type": "boolean",
+            "title": "Mirror"
+          },
+          "macro": {
+            "type": "boolean",
+            "title": "Macro"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "m10",
+          "m11",
+          "history",
+          "mirror",
+          "macro"
+        ],
+        "title": "ArtifactReadiness",
+        "description": "Immutable artifact readiness contract."
+      },
+      "Attribution": {
+        "properties": {
+          "feature": {
+            "type": "string",
+            "title": "Feature"
+          },
+          "feature_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Feature Value"
+          },
+          "shap_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shap Value"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "trade_lag",
+              "rolling_stat",
+              "seasonality",
+              "macro_indicator"
+            ],
+            "title": "Category"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "feature",
+          "feature_value",
+          "shap_value",
+          "category"
+        ],
+        "title": "Attribution",
+        "description": "Immutable attribution contract."
+      },
+      "AvailableExplanation": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "available",
+            "title": "Status",
+            "default": "available"
+          },
+          "sector_id": {
+            "type": "string",
+            "title": "Sector Id"
+          },
+          "horizon": {
+            "type": "integer",
+            "enum": [
+              1,
+              3,
+              6
+            ],
+            "title": "Horizon"
+          },
+          "model_family": {
+            "type": "string",
+            "const": "xgboost",
+            "title": "Model Family",
+            "default": "xgboost"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "champion",
+              "fallback"
+            ],
+            "title": "Role"
+          },
+          "evaluation_scope": {
+            "type": "string",
+            "title": "Evaluation Scope"
+          },
+          "global_importance": {
+            "items": {
+              "$ref": "#/components/schemas/FeatureImportance"
+            },
+            "type": "array",
+            "title": "Global Importance"
+          },
+          "local": {
+            "items": {
+              "$ref": "#/components/schemas/LocalExplanation"
+            },
+            "type": "array",
+            "title": "Local"
+          },
+          "explanation_scope": {
+            "type": "string",
+            "const": "predictive_attribution_not_causality",
+            "title": "Explanation Scope",
+            "default": "predictive_attribution_not_causality"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "sector_id",
+          "horizon",
+          "role",
+          "evaluation_scope",
+          "global_importance",
+          "local"
+        ],
+        "title": "AvailableExplanation",
+        "description": "Immutable available explanation contract."
+      },
+      "CvCandidate": {
+        "properties": {
+          "model_family": {
+            "type": "string",
+            "enum": [
+              "sarima",
+              "sarimax",
+              "xgboost",
+              "seasonal_naive"
+            ],
+            "title": "Model Family"
+          },
+          "mean_smape": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Smape"
+          },
+          "mean_mae": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Mae"
+          },
+          "mean_rmse": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Rmse"
+          },
+          "eligibility_status": {
+            "type": "string",
+            "title": "Eligibility Status"
+          },
+          "n_expected_folds": {
+            "type": "integer",
+            "title": "N Expected Folds"
+          },
+          "n_valid_folds": {
+            "type": "integer",
+            "title": "N Valid Folds"
+          },
+          "n_negative_predictions": {
+            "type": "integer",
+            "title": "N Negative Predictions"
+          },
+          "convergence_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Convergence Rate"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "model_family",
+          "mean_smape",
+          "mean_mae",
+          "mean_rmse",
+          "eligibility_status",
+          "n_expected_folds",
+          "n_valid_folds",
+          "n_negative_predictions",
+          "convergence_rate"
+        ],
+        "title": "CvCandidate",
+        "description": "One frozen M10 candidate; means use only its recorded valid CV origins."
+      },
+      "ErrorDetail": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "title": "ErrorDetail",
+        "description": "Immutable error detail contract."
+      },
+      "ErrorResponse": {
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorDetail"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "title": "ErrorResponse",
+        "description": "Immutable error response contract."
+      },
+      "FeatureImportance": {
+        "properties": {
+          "feature": {
+            "type": "string",
+            "title": "Feature"
+          },
+          "mean_abs_shap": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Abs Shap"
+          },
+          "mean_signed_shap": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Signed Shap"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "trade_lag",
+              "rolling_stat",
+              "seasonality",
+              "macro_indicator"
+            ],
+            "title": "Category"
+          },
+          "n_origins": {
+            "type": "integer",
+            "title": "N Origins"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "feature",
+          "mean_abs_shap",
+          "mean_signed_shap",
+          "category",
+          "n_origins"
+        ],
+        "title": "FeatureImportance",
+        "description": "Immutable feature importance contract."
+      },
+      "ForecastPoint": {
+        "properties": {
+          "origin_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Origin Date"
+          },
+          "target_date": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "title": "Target Date"
+          },
+          "actual": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actual"
+          },
+          "operational_forecast": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Operational Forecast"
+          },
+          "champion_forecast": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Champion Forecast"
+          },
+          "fallback_forecast": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback Forecast"
+          },
+          "seasonal_naive_forecast": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Seasonal Naive Forecast"
+          },
+          "used_fallback": {
+            "type": "boolean",
+            "title": "Used Fallback"
+          },
+          "operational_model": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "sarima",
+                  "sarimax",
+                  "xgboost",
+                  "seasonal_naive"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Operational Model"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "unavailable"
+            ],
+            "title": "Status"
+          },
+          "champion_is_valid": {
+            "type": "boolean",
+            "title": "Champion Is Valid"
+          },
+          "fallback_is_valid": {
+            "type": "boolean",
+            "title": "Fallback Is Valid"
+          },
+          "lower_80": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lower 80"
+          },
+          "upper_80": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Upper 80"
+          },
+          "lower_95": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lower 95"
+          },
+          "upper_95": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Upper 95"
+          },
+          "interval_policy": {
+            "type": "string",
+            "enum": [
+              "native",
+              "prequential_conformal",
+              "unavailable"
+            ],
+            "title": "Interval Policy"
+          },
+          "calibration_pool_size": {
+            "type": "integer",
+            "title": "Calibration Pool Size"
+          },
+          "train_end": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "title": "Train End"
+          },
+          "pre_freeze_origin": {
+            "type": "boolean",
+            "title": "Pre Freeze Origin"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "origin_date",
+          "target_date",
+          "actual",
+          "operational_forecast",
+          "champion_forecast",
+          "fallback_forecast",
+          "seasonal_naive_forecast",
+          "used_fallback",
+          "operational_model",
+          "status",
+          "champion_is_valid",
+          "fallback_is_valid",
+          "lower_80",
+          "upper_80",
+          "lower_95",
+          "upper_95",
+          "interval_policy",
+          "calibration_pool_size",
+          "train_end",
+          "pre_freeze_origin"
+        ],
+        "title": "ForecastPoint",
+        "description": "Immutable forecast point contract."
+      },
+      "ForecastResponse": {
+        "properties": {
+          "sector_id": {
+            "type": "string",
+            "title": "Sector Id"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "TR_RU",
+              "RU_TR"
+            ],
+            "title": "Direction"
+          },
+          "hs2": {
+            "type": "string",
+            "title": "Hs2"
+          },
+          "evaluation_scope": {
+            "type": "string",
+            "title": "Evaluation Scope"
+          },
+          "forecast_kind": {
+            "type": "string",
+            "const": "historical_holdout",
+            "title": "Forecast Kind",
+            "default": "historical_holdout"
+          },
+          "unit": {
+            "type": "string",
+            "const": "USD",
+            "title": "Unit",
+            "default": "USD"
+          },
+          "observation_cutoff": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "title": "Observation Cutoff"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/HistoricalPoint"
+            },
+            "type": "array",
+            "title": "History"
+          },
+          "tasks": {
+            "items": {
+              "$ref": "#/components/schemas/ForecastTask"
+            },
+            "type": "array",
+            "title": "Tasks"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "sector_id",
+          "direction",
+          "hs2",
+          "evaluation_scope",
+          "observation_cutoff",
+          "history",
+          "tasks"
+        ],
+        "title": "ForecastResponse",
+        "description": "Immutable forecast response contract."
+      },
+      "ForecastTask": {
+        "properties": {
+          "horizon": {
+            "type": "integer",
+            "enum": [
+              1,
+              3,
+              6
+            ],
+            "title": "Horizon"
+          },
+          "champion_model": {
+            "type": "string",
+            "enum": [
+              "sarima",
+              "sarimax",
+              "xgboost",
+              "seasonal_naive"
+            ],
+            "title": "Champion Model"
+          },
+          "fallback_model": {
+            "type": "string",
+            "enum": [
+              "sarima",
+              "sarimax",
+              "xgboost",
+              "seasonal_naive"
+            ],
+            "title": "Fallback Model"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/MetricSummary"
+          },
+          "primary_metrics": {
+            "$ref": "#/components/schemas/MetricSummary"
+          },
+          "intervals": {
+            "$ref": "#/components/schemas/IntervalDiagnostics"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/ForecastPoint"
+            },
+            "type": "array",
+            "title": "Points"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "horizon",
+          "champion_model",
+          "fallback_model",
+          "metrics",
+          "primary_metrics",
+          "intervals",
+          "points"
+        ],
+        "title": "ForecastTask",
+        "description": "Immutable forecast task contract."
+      },
+      "GlobalKpis": {
+        "properties": {
+          "operational_mean_smape": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Operational Mean Smape"
+          },
+          "baseline_mean_smape": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Mean Smape"
+          },
+          "cv_mean_skill_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cv Mean Skill Pct"
+          },
+          "sarima_champions": {
+            "type": "integer",
+            "title": "Sarima Champions"
+          },
+          "xgboost_champions": {
+            "type": "integer",
+            "title": "Xgboost Champions"
+          },
+          "fallback_replacements": {
+            "type": "integer",
+            "title": "Fallback Replacements"
+          },
+          "total_tasks": {
+            "type": "integer",
+            "title": "Total Tasks"
+          },
+          "weighting": {
+            "type": "string",
+            "const": "equal_task",
+            "title": "Weighting",
+            "default": "equal_task"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "operational_mean_smape",
+          "baseline_mean_smape",
+          "cv_mean_skill_pct",
+          "sarima_champions",
+          "xgboost_champions",
+          "fallback_replacements",
+          "total_tasks"
+        ],
+        "title": "GlobalKpis",
+        "description": "Immutable global kpis contract."
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "healthy",
+              "degraded"
+            ],
+            "title": "Status"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Timestamp"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "environment": {
+            "type": "string",
+            "title": "Environment"
+          },
+          "specification_version": {
+            "type": "string",
+            "const": "1.1",
+            "title": "Specification Version",
+            "default": "1.1"
+          },
+          "evaluation_scope": {
+            "type": "string",
+            "title": "Evaluation Scope"
+          },
+          "checksum_status": {
+            "type": "string",
+            "enum": [
+              "verified",
+              "failed"
+            ],
+            "title": "Checksum Status"
+          },
+          "verification_scope": {
+            "type": "string",
+            "title": "Verification Scope"
+          },
+          "verified_file_count": {
+            "type": "integer",
+            "title": "Verified File Count"
+          },
+          "serving_manifest_sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Serving Manifest Sha256"
+          },
+          "total_tasks": {
+            "type": "integer",
+            "title": "Total Tasks"
+          },
+          "total_holdout_predictions": {
+            "type": "integer",
+            "title": "Total Holdout Predictions"
+          },
+          "total_shap_rows": {
+            "type": "integer",
+            "title": "Total Shap Rows"
+          },
+          "readiness": {
+            "$ref": "#/components/schemas/ArtifactReadiness"
+          },
+          "m10": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Provenance"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "m11": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Provenance"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "timestamp",
+          "version",
+          "environment",
+          "evaluation_scope",
+          "checksum_status",
+          "verification_scope",
+          "verified_file_count",
+          "serving_manifest_sha256",
+          "total_tasks",
+          "total_holdout_predictions",
+          "total_shap_rows",
+          "readiness",
+          "m10",
+          "m11"
+        ],
+        "title": "HealthResponse",
+        "description": "Immutable health response contract."
+      },
+      "HistoricalPoint": {
+        "properties": {
+          "period": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "title": "Period"
+          },
+          "trade_value_usd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trade Value Usd"
+          },
+          "data_status": {
+            "type": "string",
+            "title": "Data Status"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "reporter_code": {
+            "type": "integer",
+            "title": "Reporter Code"
+          },
+          "partner_code": {
+            "type": "integer",
+            "title": "Partner Code"
+          },
+          "flow": {
+            "type": "string",
+            "title": "Flow"
+          },
+          "retrieved_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Retrieved At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "period",
+          "trade_value_usd",
+          "data_status",
+          "source",
+          "reporter_code",
+          "partner_code",
+          "flow",
+          "retrieved_at"
+        ],
+        "title": "HistoricalPoint",
+        "description": "Immutable historical point contract."
+      },
+      "IndicatorPoint": {
+        "properties": {
+          "indicator_id": {
+            "type": "string",
+            "title": "Indicator Id"
+          },
+          "indicator_name": {
+            "type": "string",
+            "title": "Indicator Name"
+          },
+          "period": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "title": "Period"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "source_provider": {
+            "type": "string",
+            "title": "Source Provider"
+          },
+          "source_series_id": {
+            "type": "string",
+            "title": "Source Series Id"
+          },
+          "availability_date_or_approximation": {
+            "type": "string",
+            "title": "Availability Date Or Approximation"
+          },
+          "availability_is_exact": {
+            "type": "boolean",
+            "title": "Availability Is Exact"
+          },
+          "release_lag_rule": {
+            "type": "string",
+            "title": "Release Lag Rule"
+          },
+          "retrieved_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Retrieved At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "indicator_id",
+          "indicator_name",
+          "period",
+          "value",
+          "unit",
+          "source_provider",
+          "source_series_id",
+          "availability_date_or_approximation",
+          "availability_is_exact",
+          "release_lag_rule",
+          "retrieved_at"
+        ],
+        "title": "IndicatorPoint",
+        "description": "Immutable indicator point contract."
+      },
+      "IndicatorsResponse": {
+        "properties": {
+          "evaluation_scope": {
+            "type": "string",
+            "title": "Evaluation Scope"
+          },
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/IndicatorPoint"
+            },
+            "type": "array",
+            "title": "Observations"
+          },
+          "total_observations": {
+            "type": "integer",
+            "title": "Total Observations"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "evaluation_scope",
+          "observations",
+          "total_observations",
+          "offset",
+          "limit"
+        ],
+        "title": "IndicatorsResponse",
+        "description": "Immutable indicators response contract."
+      },
+      "IntervalDiagnostics": {
+        "properties": {
+          "empirical_coverage_80": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Empirical Coverage 80"
+          },
+          "empirical_coverage_95": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Empirical Coverage 95"
+          },
+          "interval_origins": {
+            "type": "integer",
+            "title": "Interval Origins"
+          },
+          "mean_width_80": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Width 80"
+          },
+          "mean_width_95": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Width 95"
+          },
+          "calibration_pool_size": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calibration Pool Size"
+          },
+          "coverage_unit": {
+            "type": "string",
+            "const": "fraction",
+            "title": "Coverage Unit",
+            "default": "fraction"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "empirical_coverage_80",
+          "empirical_coverage_95",
+          "interval_origins",
+          "mean_width_80",
+          "mean_width_95"
+        ],
+        "title": "IntervalDiagnostics",
+        "description": "Immutable interval diagnostics contract."
+      },
+      "LeaderboardResponse": {
+        "properties": {
+          "evaluation_scope": {
+            "type": "string",
+            "title": "Evaluation Scope"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/GlobalKpis"
+          },
+          "tasks": {
+            "items": {
+              "$ref": "#/components/schemas/TaskComparison"
+            },
+            "type": "array",
+            "title": "Tasks"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "evaluation_scope",
+          "summary",
+          "tasks"
+        ],
+        "title": "LeaderboardResponse",
+        "description": "Immutable leaderboard response contract."
+      },
+      "LocalExplanation": {
+        "properties": {
+          "origin_month": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "title": "Origin Month"
+          },
+          "target_month": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "title": "Target Month"
+          },
+          "base_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Base Value"
+          },
+          "prediction": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prediction"
+          },
+          "contributions": {
+            "items": {
+              "$ref": "#/components/schemas/Attribution"
+            },
+            "type": "array",
+            "title": "Contributions"
+          },
+          "top_positive": {
+            "items": {
+              "$ref": "#/components/schemas/Attribution"
+            },
+            "type": "array",
+            "title": "Top Positive"
+          },
+          "top_negative": {
+            "items": {
+              "$ref": "#/components/schemas/Attribution"
+            },
+            "type": "array",
+            "title": "Top Negative"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "origin_month",
+          "target_month",
+          "base_value",
+          "prediction",
+          "contributions",
+          "top_positive",
+          "top_negative"
+        ],
+        "title": "LocalExplanation",
+        "description": "Immutable local explanation contract."
+      },
+      "MethodologyResponse": {
+        "properties": {
+          "specification_version": {
+            "type": "string",
+            "title": "Specification Version"
+          },
+          "evaluation_scope": {
+            "type": "string",
+            "title": "Evaluation Scope"
+          },
+          "forecast_kind": {
+            "type": "string",
+            "title": "Forecast Kind"
+          },
+          "target_policy": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Target Policy"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          },
+          "unit": {
+            "type": "string",
+            "title": "Unit"
+          },
+          "monetary_serialization": {
+            "type": "string",
+            "title": "Monetary Serialization"
+          },
+          "interval_coverage_unit": {
+            "type": "string",
+            "title": "Interval Coverage Unit"
+          },
+          "m10_run_digest": {
+            "type": "string",
+            "title": "M10 Run Digest"
+          },
+          "m11_run_digest": {
+            "type": "string",
+            "title": "M11 Run Digest"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "specification_version",
+          "evaluation_scope",
+          "forecast_kind",
+          "target_policy",
+          "limitations",
+          "unit",
+          "monetary_serialization",
+          "interval_coverage_unit",
+          "m10_run_digest",
+          "m11_run_digest"
+        ],
+        "title": "MethodologyResponse",
+        "description": "Immutable methodology response contract."
+      },
+      "MetricSummary": {
+        "properties": {
+          "mean_smape": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Smape"
+          },
+          "mean_mae": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Mae"
+          },
+          "mean_rmse": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Rmse"
+          },
+          "valid_origins": {
+            "type": "integer",
+            "title": "Valid Origins"
+          },
+          "expected_origins": {
+            "type": "integer",
+            "title": "Expected Origins"
+          },
+          "skill_vs_naive_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Skill Vs Naive Pct"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "mean_smape",
+          "mean_mae",
+          "mean_rmse",
+          "valid_origins",
+          "expected_origins"
+        ],
+        "title": "MetricSummary",
+        "description": "Immutable metric summary contract."
+      },
+      "MirrorPoint": {
+        "properties": {
+          "sector_id": {
+            "type": "string",
+            "title": "Sector Id"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "TR_RU",
+              "RU_TR"
+            ],
+            "title": "Direction"
+          },
+          "hs2": {
+            "type": "string",
+            "title": "Hs2"
+          },
+          "period": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "title": "Period"
+          },
+          "canonical_value_usd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Canonical Value Usd"
+          },
+          "mirror_value_usd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mirror Value Usd"
+          },
+          "mirror_gap_usd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mirror Gap Usd"
+          },
+          "mirror_gap_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mirror Gap Pct"
+          },
+          "abs_mirror_gap_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abs Mirror Gap Pct"
+          },
+          "pair_status": {
+            "type": "string",
+            "title": "Pair Status"
+          },
+          "classification_mismatch": {
+            "type": "boolean",
+            "title": "Classification Mismatch"
+          },
+          "gap_flag": {
+            "type": "string",
+            "title": "Gap Flag"
+          },
+          "canonical_retrieved_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Canonical Retrieved At"
+          },
+          "mirror_retrieved_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mirror Retrieved At"
+          },
+          "forecast_target_column": {
+            "type": "string",
+            "enum": [
+              "canonical_value_usd",
+              "mirror_value_usd"
+            ],
+            "title": "Forecast Target Column"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "sector_id",
+          "direction",
+          "hs2",
+          "period",
+          "canonical_value_usd",
+          "mirror_value_usd",
+          "mirror_gap_usd",
+          "mirror_gap_pct",
+          "abs_mirror_gap_pct",
+          "pair_status",
+          "classification_mismatch",
+          "gap_flag",
+          "canonical_retrieved_at",
+          "mirror_retrieved_at",
+          "forecast_target_column"
+        ],
+        "title": "MirrorPoint",
+        "description": "Immutable mirror point contract."
+      },
+      "MirrorResponse": {
+        "properties": {
+          "source": {
+            "type": "string",
+            "const": "UN Comtrade",
+            "title": "Source",
+            "default": "UN Comtrade"
+          },
+          "reporter_sources": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Reporter Sources",
+            "default": [
+              "Türkiye reporter",
+              "Russia reporter"
+            ]
+          },
+          "gap_definition": {
+            "type": "string",
+            "title": "Gap Definition"
+          },
+          "valuation_note": {
+            "type": "string",
+            "title": "Valuation Note"
+          },
+          "structural_shift_status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "unavailable_no_paired_post_2022"
+            ],
+            "title": "Structural Shift Status"
+          },
+          "structural_shift_pp": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Structural Shift Pp"
+          },
+          "summaries": {
+            "items": {
+              "$ref": "#/components/schemas/MirrorSummary"
+            },
+            "type": "array",
+            "title": "Summaries"
+          },
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/MirrorPoint"
+            },
+            "type": "array",
+            "title": "Observations"
+          },
+          "total_observations": {
+            "type": "integer",
+            "title": "Total Observations"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "gap_definition",
+          "valuation_note",
+          "structural_shift_status",
+          "structural_shift_pp",
+          "summaries",
+          "observations",
+          "total_observations",
+          "offset",
+          "limit"
+        ],
+        "title": "MirrorResponse",
+        "description": "Immutable mirror response contract."
+      },
+      "MirrorSummary": {
+        "properties": {
+          "period_group": {
+            "type": "string",
+            "enum": [
+              "pre_2022",
+              "post_2022"
+            ],
+            "title": "Period Group"
+          },
+          "observation_count": {
+            "type": "integer",
+            "title": "Observation Count"
+          },
+          "paired_count": {
+            "type": "integer",
+            "title": "Paired Count"
+          },
+          "mean_abs_gap_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Abs Gap Pct"
+          },
+          "median_abs_gap_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Median Abs Gap Pct"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "period_group",
+          "observation_count",
+          "paired_count",
+          "mean_abs_gap_pct",
+          "median_abs_gap_pct"
+        ],
+        "title": "MirrorSummary",
+        "description": "Immutable mirror summary contract."
+      },
+      "OverviewResponse": {
+        "properties": {
+          "evaluation_scope": {
+            "type": "string",
+            "title": "Evaluation Scope"
+          },
+          "observation_cutoff": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "title": "Observation Cutoff"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/GlobalKpis"
+          },
+          "tr_ru_total_usd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tr Ru Total Usd"
+          },
+          "ru_tr_total_usd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ru Tr Total Usd"
+          },
+          "bilateral_total_usd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bilateral Total Usd"
+          },
+          "turkey_trade_balance_usd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Turkey Trade Balance Usd"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "evaluation_scope",
+          "observation_cutoff",
+          "summary",
+          "tr_ru_total_usd",
+          "ru_tr_total_usd",
+          "bilateral_total_usd",
+          "turkey_trade_balance_usd"
+        ],
+        "title": "OverviewResponse",
+        "description": "Immutable overview response contract."
+      },
+      "Provenance": {
+        "properties": {
+          "git_commit": {
+            "type": "string",
+            "title": "Git Commit"
+          },
+          "source_fingerprint": {
+            "type": "string",
+            "title": "Source Fingerprint"
+          },
+          "manifest_sha256": {
+            "type": "string",
+            "title": "Manifest Sha256"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "run_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "git_commit",
+          "source_fingerprint",
+          "manifest_sha256",
+          "created_at"
+        ],
+        "title": "Provenance",
+        "description": "Immutable provenance contract."
+      },
+      "RootResponse": {
+        "properties": {
+          "service": {
+            "type": "string",
+            "title": "Service",
+            "default": "TR-RU Trade Forecasting Platform API"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version",
+            "default": "0.1.0"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "default": "online"
+          },
+          "docs_url": {
+            "type": "string",
+            "title": "Docs Url",
+            "default": "/docs"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "RootResponse",
+        "description": "Immutable root response contract."
+      },
+      "Sector": {
+        "properties": {
+          "sector_id": {
+            "type": "string",
+            "title": "Sector Id"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "TR_RU",
+              "RU_TR"
+            ],
+            "title": "Direction"
+          },
+          "hs2": {
+            "type": "string",
+            "title": "Hs2"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "is_total": {
+            "type": "boolean",
+            "title": "Is Total"
+          },
+          "history_start": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "title": "History Start"
+          },
+          "history_end": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "title": "History End"
+          },
+          "latest_trade_value_usd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latest Trade Value Usd"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "reporter_code": {
+            "type": "integer",
+            "title": "Reporter Code"
+          },
+          "flow": {
+            "type": "string",
+            "title": "Flow"
+          },
+          "retrieved_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Retrieved At"
+          },
+          "tasks": {
+            "items": {
+              "$ref": "#/components/schemas/TaskAssignment"
+            },
+            "type": "array",
+            "title": "Tasks"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "sector_id",
+          "direction",
+          "hs2",
+          "title",
+          "is_total",
+          "history_start",
+          "history_end",
+          "latest_trade_value_usd",
+          "source",
+          "reporter_code",
+          "flow",
+          "retrieved_at",
+          "tasks"
+        ],
+        "title": "Sector",
+        "description": "Immutable sector contract."
+      },
+      "SectorCatalog": {
+        "properties": {
+          "evaluation_scope": {
+            "type": "string",
+            "title": "Evaluation Scope"
+          },
+          "sectors": {
+            "items": {
+              "$ref": "#/components/schemas/Sector"
+            },
+            "type": "array",
+            "title": "Sectors"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "evaluation_scope",
+          "sectors"
+        ],
+        "title": "SectorCatalog",
+        "description": "Immutable sector catalog contract."
+      },
+      "TaskAssignment": {
+        "properties": {
+          "horizon": {
+            "type": "integer",
+            "enum": [
+              1,
+              3,
+              6
+            ],
+            "title": "Horizon"
+          },
+          "champion_model": {
+            "type": "string",
+            "enum": [
+              "sarima",
+              "sarimax",
+              "xgboost",
+              "seasonal_naive"
+            ],
+            "title": "Champion Model"
+          },
+          "fallback_model": {
+            "type": "string",
+            "enum": [
+              "sarima",
+              "sarimax",
+              "xgboost",
+              "seasonal_naive"
+            ],
+            "title": "Fallback Model"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "horizon",
+          "champion_model",
+          "fallback_model"
+        ],
+        "title": "TaskAssignment",
+        "description": "Immutable task assignment contract."
+      },
+      "TaskComparison": {
+        "properties": {
+          "sector_id": {
+            "type": "string",
+            "title": "Sector Id"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "TR_RU",
+              "RU_TR"
+            ],
+            "title": "Direction"
+          },
+          "hs2": {
+            "type": "string",
+            "title": "Hs2"
+          },
+          "horizon": {
+            "type": "integer",
+            "enum": [
+              1,
+              3,
+              6
+            ],
+            "title": "Horizon"
+          },
+          "champion_model": {
+            "type": "string",
+            "enum": [
+              "sarima",
+              "sarimax",
+              "xgboost",
+              "seasonal_naive"
+            ],
+            "title": "Champion Model"
+          },
+          "fallback_model": {
+            "type": "string",
+            "enum": [
+              "sarima",
+              "sarimax",
+              "xgboost",
+              "seasonal_naive"
+            ],
+            "title": "Fallback Model"
+          },
+          "selection_reason": {
+            "type": "string",
+            "title": "Selection Reason"
+          },
+          "has_stability_flag": {
+            "type": "boolean",
+            "title": "Has Stability Flag"
+          },
+          "cv": {
+            "$ref": "#/components/schemas/MetricSummary"
+          },
+          "champion": {
+            "$ref": "#/components/schemas/MetricSummary"
+          },
+          "operational": {
+            "$ref": "#/components/schemas/MetricSummary"
+          },
+          "fallback": {
+            "$ref": "#/components/schemas/MetricSummary"
+          },
+          "baseline": {
+            "$ref": "#/components/schemas/MetricSummary"
+          },
+          "cv_candidates": {
+            "items": {
+              "$ref": "#/components/schemas/CvCandidate"
+            },
+            "type": "array",
+            "title": "Cv Candidates"
+          },
+          "raw_champion_smape": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Champion Smape"
+          },
+          "cv_vs_holdout_drift": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cv Vs Holdout Drift"
+          },
+          "fallback_replacements": {
+            "type": "integer",
+            "title": "Fallback Replacements"
+          },
+          "intervals": {
+            "$ref": "#/components/schemas/IntervalDiagnostics"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "sector_id",
+          "direction",
+          "hs2",
+          "horizon",
+          "champion_model",
+          "fallback_model",
+          "selection_reason",
+          "has_stability_flag",
+          "cv",
+          "champion",
+          "operational",
+          "fallback",
+          "baseline",
+          "cv_candidates",
+          "raw_champion_smape",
+          "cv_vs_holdout_drift",
+          "fallback_replacements",
+          "intervals"
+        ],
+        "title": "TaskComparison",
+        "description": "Immutable task comparison contract."
+      },
+      "TradeResponse": {
+        "properties": {
+          "sector_id": {
+            "type": "string",
+            "title": "Sector Id"
+          },
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/HistoricalPoint"
+            },
+            "type": "array",
+            "title": "Observations"
+          },
+          "total_observations": {
+            "type": "integer",
+            "title": "Total Observations"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "unit": {
+            "type": "string",
+            "const": "USD",
+            "title": "Unit",
+            "default": "USD"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "sector_id",
+          "observations",
+          "total_observations",
+          "offset",
+          "limit"
+        ],
+        "title": "TradeResponse",
+        "description": "Immutable trade response contract."
+      },
+      "UnavailableExplanation": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "unavailable",
+            "title": "Status",
+            "default": "unavailable"
+          },
+          "sector_id": {
+            "type": "string",
+            "title": "Sector Id"
+          },
+          "horizon": {
+            "type": "integer",
+            "enum": [
+              1,
+              3,
+              6
+            ],
+            "title": "Horizon"
+          },
+          "evaluation_scope": {
+            "type": "string",
+            "title": "Evaluation Scope"
+          },
+          "reason": {
+            "type": "string",
+            "const": "no_xgboost_role",
+            "title": "Reason",
+            "default": "no_xgboost_role"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "sector_id",
+          "horizon",
+          "evaluation_scope"
+        ],
+        "title": "UnavailableExplanation",
+        "description": "Immutable unavailable explanation contract."
+      }
+    }
+  }
+}

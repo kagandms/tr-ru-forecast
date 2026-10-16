@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-16",
+  "mode": "local in-process ASGI TestClient; serial warm requests, no network/load SLA",
+  "python": "3.13.9",
+  "platform": "Darwin arm64",
+  "snapshot_startup_seconds": 1.77,
+  "routes": {
+    "/api/v1/health": {
+      "samples": 30,
+      "median_ms": 0.498,
+      "p95_ms": 0.653,
+      "response_bytes": 1202
+    },
+    "/api/v1/sectors": {
+      "samples": 30,
+      "median_ms": 0.567,
+      "p95_ms": 0.67,
+      "response_bytes": 7594
+    },
+    "/api/v1/leaderboard": {
+      "samples": 30,
+      "median_ms": 0.915,
+      "p95_ms": 1.106,
+      "response_bytes": 97863
+    },
+    "/api/v1/forecasts/RU_TR__10?horizon=3": {
+      "samples": 30,
+      "median_ms": 0.724,
+      "p95_ms": 0.943,
+      "response_bytes": 41350
+    },
+    "/api/v1/explainability/RU_TR__10?horizon=3": {
+      "samples": 30,
+      "median_ms": 0.855,
+      "p95_ms": 1.063,
+      "response_bytes": 43728
+    },
+    "/api/v1/mirror-analytics?sector_id=RU_TR__10": {
+      "samples": 30,
+      "median_ms": 1.83,
+      "p95_ms": 2.311,
+      "response_bytes": 77990
+    },
+    "/api/v1/overview": {
+      "samples": 30,
+      "median_ms": 0.583,
+      "p95_ms": 0.662,
+      "response_bytes": 491
+    },
+    "/api/v1/indicators?indicator_id=brent&limit=12": {
+      "samples": 30,
+      "median_ms": 0.699,
+      "p95_ms": 0.842,
+      "response_bytes": 6037
+    }
+  }
+}

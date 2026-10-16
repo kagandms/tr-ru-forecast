@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-16",
+  "targeted_api_command": "make m12-verify",
+  "targeted_api_tests_passed": 70,
+  "targeted_api_warnings": 0,
+  "targeted_api_duration_seconds": 6.21,
+  "full_suite_command": ".venv/bin/pytest -q -W error -o addopts=''",
+  "full_suite_tests_passed": 509,
+  "full_suite_warnings": 0,
+  "full_suite_errors": 0,
+  "full_suite_duration_seconds": 806.75,
+  "ruff": "passed",
+  "uv_lock_check": "passed",
+  "git_diff_check": "passed",
+  "ast_length_annotations_no_any_type_ignore": "passed",
+  "protected_processed_file_count": 102,
+  "all_processed_file_sha256_unchanged": true,
+  "m12_source_fingerprint": "afefdab509602cfc5f4e03509bfa5502f57fd9dfecd91a97c909e94c89670eed",
+  "latency_benchmark": "docs/M12_LATENCY_BENCHMARK.json",
+  "uvicorn_http_smoke": "docs/M12_HTTP_SMOKE.json"
+}

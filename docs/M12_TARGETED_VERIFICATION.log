@@ -1,0 +1,7 @@
+.venv/bin/ruff check .
+All checks passed!
+.venv/bin/python scripts/verify_serving.py
+INFO M12 structure audit passed: <=30 lines, annotated, no Any/type-ignore
+.venv/bin/pytest tests/api -q -W error -o addopts=''
+......................................................................   [100%]
+70 passed in 6.21s

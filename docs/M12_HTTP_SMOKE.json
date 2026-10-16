@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-16",
+  "mode": "local uvicorn TCP HTTP, temporary loopback port; process stopped after smoke",
+  "health": "healthy",
+  "checks": [
+    {
+      "route": "/api/v1/sectors",
+      "status": 200,
+      "json_valid": true,
+      "cors_origin": "http://localhost:3000"
+    },
+    {
+      "route": "/api/v1/leaderboard",
+      "status": 200,
+      "json_valid": true,
+      "cors_origin": "http://localhost:3000"
+    },
+    {
+      "route": "/api/v1/forecasts/RU_TR__10?horizon=3",
+      "status": 200,
+      "json_valid": true,
+      "cors_origin": "http://localhost:3000"
+    },
+    {
+      "route": "/api/v1/mirror-analytics?hs2=10&direction=RU_TR",
+      "status": 200,
+      "json_valid": true,
+      "cors_origin": "http://localhost:3000"
+    }
+  ]
+}

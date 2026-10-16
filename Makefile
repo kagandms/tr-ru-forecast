@@ -9,7 +9,7 @@ PYTEST ?= $(VENV)/bin/pytest
 RUFF ?= $(VENV)/bin/ruff
 UVICORN ?= $(VENV)/bin/uvicorn
 
-.PHONY: help install install-python install-frontend test lint format run-api run-frontend build-frontend clean
+.PHONY: help install install-python install-frontend test lint format run-api run-frontend build-frontend m13-export-snapshot clean
 
 help:
 	@echo "TR-RU Forecasting Platform - Developer Commands"
@@ -28,6 +28,7 @@ help:
 	@echo "make run-api          : Run FastAPI backend server locally"
 	@echo "make run-frontend     : Run Next.js frontend development server"
 	@echo "make build-frontend   : Build Next.js frontend for production"
+	@echo "make m13-export-snapshot : Export deterministic verified M12 projections for the frontend"
 	@echo "make clean            : Clean build artifacts and caches"
 
 $(VENV)/bin/activate:
@@ -73,6 +74,23 @@ run-frontend:
 build-frontend:
 	npm --prefix frontend run build
 
+m13-export-snapshot:
+	PYTHONPATH=. $(PYTHON) scripts/export_m13_snapshot.py
+
 clean:
 	rm -rf build/ dist/ *.egg-info .pytest_cache/ .ruff_cache/ frontend/.next/
 	find . -type d -name "__pycache__" -exec rm -rf {} +
+
+.PHONY: m10-select
+m10-select:
+	$(PYTHON) -m tr_ru_forecast.evaluation.cli $(if $(M10_OUTPUT_DIR),--output-dir "$(M10_OUTPUT_DIR)",)
+
+.PHONY: m11-holdout
+m11-holdout:
+	$(PYTHON) -m tr_ru_forecast.evaluation.holdout_cli $(if $(M11_OUTPUT_DIR),--output-dir "$(M11_OUTPUT_DIR)",)
+
+.PHONY: m12-verify
+m12-verify:
+	$(RUFF) check .
+	$(PYTHON) scripts/verify_serving.py
+	$(PYTEST) tests/api -q -W error -o addopts=''
