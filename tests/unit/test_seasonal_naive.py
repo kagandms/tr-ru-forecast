@@ -49,9 +49,14 @@ Verifies all 50 critical requirements from Milestone M6 specification:
 46. no champion selection artifacts created.
 47. no M11 holdout artifacts created.
 48. no XGBoost artifacts created.
-49. no M9+ implementation exists.
+49. earlier model runs preserve later milestone reports.
 50. lint/test commands remain clean.
 """
+
+from __future__ import annotations
+
+import hashlib
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -104,7 +109,7 @@ def isolate_validation_registry_writes(tmp_path_factory):
 
 
 @pytest.fixture(scope="module")
-def pipeline_results():
+def pipeline_results(later_milestone_report_hashes: dict[Path, str | None]) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, object]]:
     """Run Seasonal Naive pipeline once for test module."""
     pred_df, metrics_df, run_meta = run_seasonal_naive_pipeline(run_id="test_run_m6")
     return pred_df, metrics_df, run_meta
@@ -553,10 +558,13 @@ def test_46_no_champion_selection_artifacts_created():
 
 
 # 47. no M11 holdout artifacts created
-def test_47_no_m11_holdout_artifacts_created():
-    settings = get_settings()
-    assert not (settings.processed_data_dir / "m11_holdout_predictions.parquet").exists()
-    assert not (settings.processed_data_dir / "m11_holdout_metrics.parquet").exists()
+def test_47_no_m11_holdout_artifacts_created(later_milestone_report_hashes: dict[Path,str|None]) -> None:
+    """Earlier pipeline execution preserves existing holdout artifacts."""
+    expected = later_milestone_report_hashes
+
+    actual = {path: hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None for path in expected}
+
+    assert actual == expected
 
 
 # 48. no champion selection artifacts created
@@ -566,11 +574,15 @@ def test_48_no_champion_selection_artifacts_created():
     assert not (settings.processed_data_dir / "m10_champion_metrics.parquet").exists()
 
 
-# 49. no M10+ implementation exists
-def test_49_no_m10_plus_implementation_exists():
-    settings = get_settings()
-    assert not (settings.project_root / "docs" / "M10_CHAMPION_SELECTION_REPORT.md").exists()
-    assert not (settings.project_root / "docs" / "M11_HOLDOUT_REPORT.md").exists()
+# 49. earlier model runs preserve later milestone reports
+def test_49_should_preserve_later_milestone_reports(later_milestone_report_hashes: dict[Path, str | None], pipeline_results: tuple[pd.DataFrame, pd.DataFrame, dict[str, object]]) -> None:
+    """Earlier model execution must not create or modify M10/M11 reports."""
+    expected_hashes = later_milestone_report_hashes
+
+    actual_hashes = {path: hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
+                     for path in expected_hashes}
+
+    assert actual_hashes == expected_hashes
 
 
 # 50. lint/test commands remain clean

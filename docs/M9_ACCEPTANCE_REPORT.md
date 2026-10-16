@@ -1,6 +1,6 @@
 # M9 XGBoost Acceptance Record
 
-**Status:** Model run and reproducibility evidence verified; overall M9 closure remains open on A2 code-structure findings. This is a development-period validation run, not an M10 champion decision or final holdout result.
+**Status:** Model run and reproducibility evidence verified; A2 code-structure findings resolved by the 2026-10-14 Stage A follow-up. This is a development-period validation run, not an M10 champion decision or final holdout result.
 
 ## Accepted run evidence
 
@@ -46,3 +46,13 @@ The M4/M5 records show latest-vintage macro series with approximate conservative
 ## Remaining acceptance boundary
 
 This record does not approve champion selection, open the 2025 holdout, claim external review, establish point-in-time macro vintages, or establish a real-time trade decision workflow. A2 remains the only unchecked M9 task; M10 is still gated.
+
+## Stage A follow-up — 2026-10-14
+
+A2 is resolved in the current source. All ML functions are at most 30 lines, all signatures are annotated, and the ML package contains no `Any` or `type: ignore`. Immutable forecast/task dataclasses and typed residual records replace unconstrained domain state. The large orchestrator, tuning, SHAP, calibration and report functions are split into explicit helpers. Existing public call signatures are retained for caller compatibility; internal state is passed through typed bundles.
+
+Validation: `.venv/bin/pytest tests/unit/test_m9_provenance.py tests/unit/test_xgboost.py -q -W error -o addopts=''` — 40 passed, zero warnings, 194.65s. A full frozen-parameter outer-CV replay then compared all 3,934 predictions, 3,934 interval audit rows, 82,614 local SHAP rows and 3,934 fit-log rows to the accepted M9 rerun with `pandas.testing.assert_frame_equal(check_exact=True)`; all four frames were exactly equal. Original accepted files were not rewritten. Run timestamps, Git provenance/source fingerprints and report layout are expected to change in newly generated runs; numerical artifacts and column order are preserved.
+
+Starlette's deprecated `httpx` fallback was removed at its source by declaring `httpx2` in the development extra, following https://starlette.dev/testclient/. Runtime Comtrade `httpx` remains available. API tests pass with `-W error`; the pre-existing global DeprecationWarning suppression was removed from pytest configuration. The locked dependency environment was synchronized before validation.
+
+The old remaining-boundary paragraph above is the historical M9 record. Current M11 readiness is governed by `configs/m11_gate_v1_1.yaml` and the original M10 registry checksum archive. Retrospective latest-vintage and approximate-release limitations are retained; this follow-up does not establish original-vintage or real-time fidelity.

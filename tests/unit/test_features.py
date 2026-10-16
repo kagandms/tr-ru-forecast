@@ -50,8 +50,13 @@ Verifies all 50 critical requirements from Milestone M5 specification:
 47. macro source registry unchanged.
 48. no scaler fitted.
 49. no model trained.
-50. no M9+ artifacts created.
+50. earlier runs preserve later milestone reports.
 """
+
+from __future__ import annotations
+
+import hashlib
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -608,15 +613,12 @@ def test_49_no_model_trained():
     assert len(trained_files) == 0, f"Found unexpected trained model files: {trained_files}"
 
 
-# 50. no M10+ artifacts created
-def test_50_no_m10_plus_artifacts_created():
-    settings = get_settings()
-    # Check that no M10+ (champion selection, holdout) artifacts exist
-    forbidden_files = [
-        settings.processed_data_dir / "m10_champion_selection.parquet",
-        settings.processed_data_dir / "m11_holdout_predictions.parquet",
-        settings.project_root / "docs" / "M10_CHAMPION_SELECTION_REPORT.md",
-        settings.project_root / "docs" / "M11_HOLDOUT_REPORT.md",
-    ]
-    for p in forbidden_files:
-        assert not p.exists(), f"Forbidden M10+ artifact exists: {p}"
+# 50. earlier feature runs preserve later milestone reports
+def test_50_should_preserve_later_milestone_reports(later_milestone_report_hashes: dict[Path, str | None]) -> None:
+    """Earlier milestone execution must preserve later reports, whether present or absent."""
+    expected_hashes = later_milestone_report_hashes
+
+    actual_hashes = {path: hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
+                     for path in expected_hashes}
+
+    assert actual_hashes == expected_hashes

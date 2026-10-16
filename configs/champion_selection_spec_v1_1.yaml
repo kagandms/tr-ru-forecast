@@ -1,0 +1,24 @@
+spec_version: '1.1'
+selection_version: '1.1.0'
+parsimony_relative_threshold: 0.02
+complexity_tiers:
+  seasonal_naive: 0
+  sarima: 1
+  sarimax: 2
+  xgboost: 3
+tie_breaks: [mean_smape, mean_mae, mean_rmse, std_smape, complexity_tier]
+stability_worst_fold_ratio: 1.25
+stability_policy: diagnostic_only
+negative_prediction_policy: ineligible_no_clipping
+fold_policy: frozen_monthly_origins
+inputs:
+  seasonal_naive: data/processed/m6_seasonal_naive_predictions.parquet
+  sarima: data/processed/m7_sarima_predictions.parquet
+  sarimax: data/processed/m8_sarimax_predictions.parquet
+  xgboost: data/processed/m9_acceptance_2026-10-14_r2/m9_xgboost_predictions.parquet
+xgboost_fit_log: data/processed/m9_acceptance_2026-10-14_r2/m9_xgboost_fit_log.parquet
+xgboost_run: data/processed/m9_acceptance_2026-10-14_r2/m9_xgboost_run.json
+xgboost_config: data/processed/m9_acceptance_2026-10-14_r2/xgboost_spec_v1_1.yaml
+output_directory: data/processed
+registry_path: configs/champion_registry_v1_1.yaml
+report_path: docs/M10_CHAMPION_SELECTION_REPORT.md

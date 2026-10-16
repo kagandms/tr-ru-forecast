@@ -30,7 +30,9 @@ def compute_source_fingerprint(source_paths: list[Path]) -> str:
     digest = hashlib.sha256()
     for source_path in sorted(source_paths):
         if not source_path.is_file():
-            raise FileNotFoundError(f"Source file required for fingerprint is missing: {source_path}")
+            raise FileNotFoundError(
+                f"Source file required for fingerprint is missing: {source_path}"
+            )
         digest.update(source_path.name.encode("utf-8"))
         digest.update(b"\0")
         digest.update(source_path.read_bytes())

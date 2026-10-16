@@ -20,10 +20,13 @@ Tests:
 17. Global feature importance aggregation across 42 groups (882 rows).
 18. Absence of 2025 predictions, intervals, or SHAP attributions.
 19. Re-run determinism test.
-20. Absence of M10 champion selection and M11 holdout artifacts.
+20. M9 preserves later milestone reports and creates no M11 holdout outputs.
 """
 
+from __future__ import annotations
+
 import hashlib
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -682,23 +685,26 @@ def test_33_latest_local_shap_examples_exist():
 
 
 # ==============================================================================
-# 10. NO M10/M11 ARTIFACTS
+# 10. LATER MILESTONE REPORT PRESERVATION AND HOLDOUT BOUNDARY
 # ==============================================================================
 
-def test_34_no_champion_selection_artifacts():
-    """Verify no M10 champion selection artifacts exist."""
-    settings = get_settings()
-    assert not (settings.processed_data_dir / "m10_champion_selection.parquet").exists()
-    assert not (settings.processed_data_dir / "m10_champion_metrics.parquet").exists()
-    assert not (settings.project_root / "docs" / "M10_CHAMPION_SELECTION_REPORT.md").exists()
+def test_34_should_preserve_later_milestone_reports(later_milestone_report_hashes: dict[Path, str | None]) -> None:
+    """Earlier milestone execution must preserve later reports, whether present or absent."""
+    expected_hashes = later_milestone_report_hashes
+
+    actual_hashes = {path: hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
+                     for path in expected_hashes}
+
+    assert actual_hashes == expected_hashes
 
 
-def test_35_no_holdout_evaluation_artifacts():
-    """Verify no M11 holdout evaluation artifacts exist."""
-    settings = get_settings()
-    assert not (settings.processed_data_dir / "m11_holdout_predictions.parquet").exists()
-    assert not (settings.processed_data_dir / "m11_holdout_metrics.parquet").exists()
-    assert not (settings.project_root / "docs" / "M11_HOLDOUT_REPORT.md").exists()
+def test_35_no_holdout_evaluation_artifacts(later_milestone_report_hashes: dict[Path,str|None]) -> None:
+    """Earlier pipeline execution preserves existing holdout artifacts."""
+    expected = later_milestone_report_hashes
+
+    actual = {path: hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None for path in expected}
+
+    assert actual == expected
 
 
 # ==============================================================================

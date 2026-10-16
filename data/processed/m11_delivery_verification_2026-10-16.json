@@ -1,0 +1,16 @@
+{
+  "verified_on": "2026-10-16",
+  "data_artifact_hashes_matched": [
+    "m11_holdout_predictions.parquet",
+    "m11_holdout_leaderboard.parquet",
+    "m11_holdout_leaderboard.csv",
+    "m11_holdout_fit_log.parquet",
+    "m11_shap_values.parquet",
+    "m11_shap_summary.parquet"
+  ],
+  "input_hashes_matched": true,
+  "source_fingerprint_matched": true,
+  "current_inputs_and_source_verified": true,
+  "docs_report_identical": true,
+  "structure_audit_passed": true
+}

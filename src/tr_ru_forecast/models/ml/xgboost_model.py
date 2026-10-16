@@ -9,8 +9,6 @@ Implements Section 6 & 7:
 
 from __future__ import annotations
 
-from typing import Any
-
 import numpy as np
 import pandas as pd
 import xgboost as xgb
@@ -20,6 +18,7 @@ from tr_ru_forecast.models.ml.constants import (
     FORBIDDEN_COLUMNS,
     M9_PREDICTORS,
 )
+from tr_ru_forecast.models.ml.records import JsonObject
 
 
 def validate_predictor_features(df: pd.DataFrame) -> None:
@@ -39,15 +38,7 @@ def get_training_subset(
     forecast_origin: str,
     horizon: int,
 ) -> pd.DataFrame:
-    """Extract legally available supervised training observations for a forecast origin and horizon.
-
-    Critical Label-Availability Embargo (Section 7):
-        training_period + horizon <= forecast_origin
-        equivalently: training_period <= forecast_origin - horizon
-
-    This guarantees that the direct label target_h{horizon} (which represents actuals at
-    training_period + horizon) would have been known at or before forecast_origin.
-    """
+    """Return origin-safe direct training rows. Args: series, origin, horizon. Raises: ValueError."""
     origin_p = pd.Period(forecast_origin.strip(), freq="M")
     cutoff_p = origin_p - horizon
     cutoff_str = str(cutoff_p)
@@ -63,31 +54,16 @@ def get_training_subset(
     if eligible.empty:
         return eligible
 
-    # Assert invariant: max training period must not exceed cutoff_str
-    max_train_period = str(eligible["period"].max())
-    if max_train_period > cutoff_str:
-        raise ValueError(
-            f"CRITICAL EMBARGO LEAKAGE: training_period '{max_train_period}' > cutoff '{cutoff_str}' "
-            f"(origin '{forecast_origin}', horizon {horizon})"
-        )
-
-    # Check that labels do not exceed forecast_origin
-    origin_str = str(origin_p)
-    for p in eligible["period"]:
-        label_period = str(pd.Period(p, freq="M") + horizon)
-        if label_period > origin_str:
-            raise ValueError(
-                f"CRITICAL LABEL LEAKAGE: label period '{label_period}' > forecast_origin '{origin_str}'"
-            )
-
+    _validate_training_embargo(eligible, str(origin_p), horizon)
     return eligible
 
 
-def build_xgb_regressor(params: dict[str, Any]) -> xgb.XGBRegressor:
+def build_xgb_regressor(params: JsonObject) -> xgb.XGBRegressor:
     """Build an XGBRegressor combining fixed hyperparameters with candidate hyperparameters."""
     # Filter candidate params to exclude candidate_id or non-XGBoost keys
     clean_params = {
-        k: v for k, v in params.items()
+        k: v
+        for k, v in params.items()
         if k in ["max_depth", "min_child_weight", "learning_rate", "n_estimators"]
     }
     full_params = {**FIXED_XGB_PARAMS, **clean_params}
@@ -134,3 +110,9 @@ def extract_origin_features(
         raise ValueError(f"Infinite values detected in origin features for '{forecast_origin}'")
 
     return X_origin
+
+
+def _validate_training_embargo(eligible: pd.DataFrame, origin: str, horizon: int) -> None:
+    label_periods = pd.PeriodIndex(eligible["period"], freq="M") + horizon
+    if (label_periods > pd.Period(origin, freq="M")).any():
+        raise ValueError("CRITICAL LABEL LEAKAGE: training label beyond origin")

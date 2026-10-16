@@ -1,0 +1,62 @@
+{
+  "provenance": {
+    "git_commit": "c7c8edc9e750d49d6de8aad676f1553f51c22387",
+    "is_working_tree_dirty": true,
+    "dirty_paths": [
+      "Makefile",
+      "README.md",
+      "configs/champion_selection_spec_v1_1.yaml",
+      "docs/COMPLETION_AND_PORTFOLIO_PLAN_2026-10-07.md",
+      "specification/CHANGELOG.md",
+      "src/tr_ru_forecast/evaluation/champion_io.py",
+      "src/tr_ru_forecast/evaluation/champion_report.py",
+      "src/tr_ru_forecast/evaluation/champion_selector.py",
+      "src/tr_ru_forecast/evaluation/cli.py",
+      "tests/unit/test_champion_selector.py"
+    ],
+    "created_at": "2026-10-14T14:27:47.380449+00:00",
+    "source_fingerprint": "c336392369e17e92f22f0a2abcde988741806d89c97aa8811d710f94bf3f0479",
+    "input_hashes": {
+      "configs/selected_sectors_v1_1.yaml": "c6e8f524657d8e542468e78dce36a73f71ffc6e594fdf2429fb2144d25522734",
+      "configs/validation_folds_v1_1.yaml": "0dc666c284991d494575a44cba18a2d93be2b3195bca01e8ae01a9f7191cded3",
+      "configs/feature_spec_v1_1.yaml": "873f98023b0b7e1e23475f82a747862e3dc51e030ed28a2f1a76924d3b7126bb",
+      "configs/sarima_orders_v1_1.yaml": "b9b2671e542e751a88972084952a1ada6f1265793ed37400bb4c71678c3775cc",
+      "configs/sarimax_spec_v1_1.yaml": "704af716aa12d537f10cc3d6258c3327083288b9c97df939de42b49b54a91ef2",
+      "configs/xgboost_spec_v1_1.yaml": "882262f94d8298ce1610242ccb0e14cf82b95ed03e8f20ecabbc14d01dfe8d84",
+      "configs/macro_sources_v1_1.yaml": "bca72a83fc59452973b9b6400760a1aed3152fd828c46387a2952b1b52833568",
+      "configs/champion_selection_spec_v1_1.yaml": "903ada3a9cd8e3db56a89c5c8634b93259ab08f8a0354bad5f57402a6e1dc917",
+      "data/processed/m6_seasonal_naive_predictions.parquet": "69a9e9040ee1dff90350c72317a9202f94d4da1124b8aca6a5c65dd5b58c30f8",
+      "data/processed/m7_sarima_predictions.parquet": "fada4268ab880bdcba90c171c3519a0eacafd0680851dce578eeaaad6f9c63d7",
+      "data/processed/m8_sarimax_predictions.parquet": "f089331b2e8b835c3d79eec8059912959ef12dafcca3683c1328c4fc385f7ac4",
+      "data/processed/m9_acceptance_2026-10-14_r2/m9_xgboost_predictions.parquet": "73993371fe45a0af234c0f889f09742bef41f53a9b6745bb10df2a53aaf1f567",
+      "data/processed/validation_origins.parquet": "442647cedab2e8f7b516172f8ad81d047f474fecf9fe8998e75e2e5375cc9e44",
+      "data/processed/m9_acceptance_2026-10-14_r2/m9_xgboost_fit_log.parquet": "63f99bc71965d70af213f5971a7d45a3d3f0f436867c1c43e58c8ead7e38f207",
+      "data/processed/m9_acceptance_2026-10-14_r2/m9_xgboost_run.json": "d289d0ca658032a94bd97931251161619fcc88ba6030863f68da8e8549d7fb93",
+      "data/processed/m9_acceptance_2026-10-14_r2/xgboost_spec_v1_1.yaml": "48e6105d3c3e9e45fe2b690feb3cb5c75a761a50357b8f36698c58243ba8ef1d",
+      "data/processed/m6_seasonal_naive_run.json": "97a9aaf9ca6f791b36d89b6b89a6309c0790f60c6e71e7427b17e153de0adb8d",
+      "data/processed/m7_sarima_run.json": "bee86508895729919bd43be0c7f4f483809d6f7f7bc3a114c610b7242248fa2c",
+      "data/processed/m8_sarimax_run.json": "4437abc8a7defc858af4fc5f48ae4b6d032a9d8e260ec938698aa9b4d3dd8e56"
+    },
+    "output_hashes": {
+      "m10_cv_leaderboard.parquet": "b57b13060c5d14aff990221d6d1036cafbf36bbfdaceff331371b9915c7352b1",
+      "m10_cv_leaderboard.csv": "28be5b1340c8629131749ebc599f250d94a5f2e2be664428b2d14a703fb02de5",
+      "m10_cv_fold_details.parquet": "f3b0d56cd132f61ba0dfb3a0977490d274d653de430cbd1b24545499f01f36cf",
+      "m10_champion_matrix.parquet": "cc9edd409af96f4d758bd1e73e69c4912110fd741b07cc0924c6cc4ea45ce5f4"
+    },
+    "legacy_metadata_discrepancies": [
+      "m8_sarimax: recorded validation YAML hash differs; exact row-level CV calendar independently verified"
+    ],
+    "holdout_accessed": false
+  },
+  "output_hashes": {
+    "M10_CHAMPION_SELECTION_REPORT.md": "d160ef133bb907649b163447579dbbade9306017aeea6d1e77e3d9614a00f3d5",
+    "champion_registry_v1_1.yaml": "21f5cd90f91c19ac9a541b3b2cdecf507e3cc55d723a77682f9ebc566dc1c502",
+    "m10_champion_matrix.parquet": "cc9edd409af96f4d758bd1e73e69c4912110fd741b07cc0924c6cc4ea45ce5f4",
+    "m10_cv_fold_details.parquet": "f3b0d56cd132f61ba0dfb3a0977490d274d653de430cbd1b24545499f01f36cf",
+    "m10_cv_leaderboard.csv": "28be5b1340c8629131749ebc599f250d94a5f2e2be664428b2d14a703fb02de5",
+    "m10_cv_leaderboard.parquet": "b57b13060c5d14aff990221d6d1036cafbf36bbfdaceff331371b9915c7352b1"
+  },
+  "champion_count": 42,
+  "candidate_count": 168,
+  "holdout_accessed": false
+}

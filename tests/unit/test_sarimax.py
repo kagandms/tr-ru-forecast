@@ -21,11 +21,14 @@ Verifies all critical requirements from the M8 specification:
 18. Exogenous provenance audit artifact generated (480 rows).
 19. M8 methodological configuration manifest exists (configs/sarimax_spec_v1_1.yaml).
 20. No champion selection (deferred to M10).
-21. No M9+ artifacts exist (m9_xgboost_predictions.parquet, M9_XGBOOST_REPORT.md).
+21. Earlier model runs preserve later milestone reports.
 22. Snapshot-date semantics audit (exact agreement between M5 and M8).
 23. Optimizer audit (primary lbfgs used, 0 retries, full convergence).
 """
 
+from __future__ import annotations
+
+import hashlib
 import json
 import tempfile
 from pathlib import Path
@@ -46,7 +49,7 @@ from tr_ru_forecast.models.classical.sarimax_pipeline import (
 
 
 @pytest.fixture(scope="module")
-def sarimax_pipeline_results():
+def sarimax_pipeline_results(later_milestone_report_hashes: dict[Path, str | None]) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, dict[str, object]]:
     """Load canonical M8 SARIMAX artifacts or execute pipeline if missing."""
     settings = get_settings()
     preds_p = settings.processed_data_dir / "m8_sarimax_predictions.parquet"
@@ -542,14 +545,15 @@ def test_20_no_champion_selection(sarimax_pipeline_results):
     assert "is_champion" not in metrics_df.columns
 
 
-# 21. No M10+ artifacts exist
-def test_21_no_m10_plus_artifacts():
-    settings = get_settings()
-    assert not (settings.processed_data_dir / "m10_champion_selection.parquet").exists()
-    assert not (settings.processed_data_dir / "m11_holdout_predictions.parquet").exists()
-    assert not (settings.project_root / "docs" / "M10_CHAMPION_SELECTION_REPORT.md").exists()
-    assert not (settings.project_root / "docs" / "M11_HOLDOUT_REPORT.md").exists()
+# 21. Earlier model runs preserve later milestone reports
+def test_21_should_preserve_later_milestone_reports(later_milestone_report_hashes: dict[Path, str | None], sarimax_pipeline_results: tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, dict[str, object]]) -> None:
+    """Earlier model execution must not create or modify M10/M11 reports."""
+    expected_hashes = later_milestone_report_hashes
 
+    actual_hashes = {path: hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
+                     for path in expected_hashes}
+
+    assert actual_hashes == expected_hashes
 
 
 # 22. Snapshot-date semantics audit (exact agreement between M5 and M8)

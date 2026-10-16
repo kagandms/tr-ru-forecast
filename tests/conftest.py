@@ -1,7 +1,11 @@
 """Pytest fixtures shared across test modules."""
 
+from __future__ import annotations
+
+import hashlib
 import shutil
 from collections.abc import Iterator
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
@@ -34,3 +38,25 @@ def client() -> TestClient:
 def settings() -> Settings:
     """Application settings fixture."""
     return get_settings()
+
+
+@pytest.fixture(scope="module", autouse=True)
+def later_milestone_report_hashes() -> dict[Path, str | None]:
+    """Capture later reports before earlier-model pipelines run; they must stay unchanged."""
+    root = get_settings().project_root
+    paths = [
+        root / "docs" / name
+        for name in (
+            "M10_CHAMPION_SELECTION_REPORT.md",
+            "M11_HOLDOUT_REPORT.md",
+            "M11_FINAL_HOLDOUT_REPORT.md",
+            "M11_ACCEPTANCE_REPORT.md",
+        )
+    ]
+    paths += list(get_settings().processed_data_dir.glob("m10_*")) + list(
+        get_settings().processed_data_dir.glob("m11_*")
+    )
+    return {
+        path: hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
+        for path in paths
+    }

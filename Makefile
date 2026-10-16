@@ -18,6 +18,7 @@ help:
 	@echo "make install-python   : Install Python dependencies in virtual environment"
 	@echo "make install-frontend : Install Next.js frontend dependencies"
 	@echo "make test             : Run Python test suite (pytest)"
+	@echo "make m10-select       : Freeze CV champions; use M10_OUTPUT_DIR for a fresh reproduction"
 	@echo "make lint             : Run Python lint checks (ruff)"
 	@echo "make format           : Auto-format Python code (ruff format & fix)"
 	@echo "make ingest            : Ingest bilateral trade data from UN Comtrade"

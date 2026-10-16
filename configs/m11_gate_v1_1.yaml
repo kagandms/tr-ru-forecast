@@ -1,0 +1,34 @@
+status: M11_READY
+stage_a_evidence:
+  source_fingerprint: e8d56237c7d4602d651cca4cb993b4e752db78096cbd7f7de81f5e54b7e8022b
+  targeted_m9_tests_passed: 40
+  warnings: 0
+  command: .venv/bin/pytest tests/unit/test_m9_provenance.py tests/unit/test_xgboost.py
+    -q -W error -o addopts=''
+  duration_seconds: 194.65
+  api_tests_passed: 2
+  validated_implementation_fingerprint_before_doc_only_change: 02fbccd6a9116b0db2c24bcfdc6e3ca53ded96051e92a85c3e52864a69ab6cdc
+  post_validation_change: documented public forwarder; underlying orchestrator AST
+    unchanged
+  post_change_api_and_provenance_tests_passed: 5
+  full_suite_tests_passed: 441
+  full_suite_warnings: 0
+m8_provenance_equivalence:
+  rule: M8_ROW_LEVEL_CALENDAR_AND_TARGET_EQUIVALENCE_NON_CHAMPION
+  recorded_yaml_sha256: fd3f6b5f3bb5e1d179b7a316f0a0207cc672acde2bf162bfa3fda7af1f308388
+  current_yaml_sha256: 0dc666c284991d494575a44cba18a2d93be2b3195bca01e8ae01a9f7191cded3
+  m8_predictions_sha256: f089331b2e8b835c3d79eec8059912959ef12dafcca3683c1328c4fc385f7ac4
+  frozen_calendar_sha256: 442647cedab2e8f7b516172f8ad81d047f474fecf9fe8998e75e2e5375cc9e44
+original_m10_registry_sha256: 21f5cd90f91c19ac9a541b3b2cdecf507e3cc55d723a77682f9ebc566dc1c502
+champion_decision_sha256: d0f7037b60ddfd96f6891f4baa6b9877fea012700a01d1d3b5c49bba05aea244
+frozen_input_hashes:
+  data/processed/forecast_target_monthly.parquet: b2c519330e0240fdb0345a09eb7e95f8e6cde25ec6e0b001115f2929d9004818
+  data/processed/macro_monthly.parquet: 30c1e2bd2c1be15865d7c36090dcb22fb81f259eeeedc29f4d3d343401ef8837
+  data/processed/m9_acceptance_2026-10-14_r2/m9_xgboost_predictions.parquet: 73993371fe45a0af234c0f889f09742bef41f53a9b6745bb10df2a53aaf1f567
+  configs/champion_registry_v1_1.yaml: 6709ff3aca2761a621a363fcc232f98f1d41c71ce2ed567c28c59559ddf04bbe
+  data/processed/m11_original_champion_registry_v1_1.yaml: 21f5cd90f91c19ac9a541b3b2cdecf507e3cc55d723a77682f9ebc566dc1c502
+  configs/sarima_orders_v1_1.yaml: b9b2671e542e751a88972084952a1ada6f1265793ed37400bb4c71678c3775cc
+  configs/feature_spec_v1_1.yaml: 873f98023b0b7e1e23475f82a747862e3dc51e030ed28a2f1a76924d3b7126bb
+  configs/macro_sources_v1_1.yaml: bca72a83fc59452973b9b6400760a1aed3152fd828c46387a2952b1b52833568
+  configs/holdout_spec_v1_1.yaml: 40c224da2433e9b20b7a48ad94b5686a4c1d9c003ad96f54fa9982beddf34527
+  data/processed/m9_acceptance_2026-10-14_r2/xgboost_spec_v1_1.yaml: 48e6105d3c3e9e45fe2b690feb3cb5c75a761a50357b8f36698c58243ba8ef1d

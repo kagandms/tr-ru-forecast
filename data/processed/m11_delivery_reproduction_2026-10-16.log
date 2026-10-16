@@ -1,0 +1,2 @@
+.venv/bin/python -m tr_ru_forecast.evaluation.holdout_cli --output-dir "data/processed/archive_m11_repro_2026-10-16"
+2026-10-16 10:16:02 | INFO     | __main__ | M11 completed: 504 task/origin cells, 1512 role predictions

@@ -1,0 +1,13 @@
+{
+  "source_fingerprint": "e8d56237c7d4602d651cca4cb993b4e752db78096cbd7f7de81f5e54b7e8022b",
+  "targeted_m9_tests_passed": 40,
+  "warnings": 0,
+  "command": ".venv/bin/pytest tests/unit/test_m9_provenance.py tests/unit/test_xgboost.py -q -W error -o addopts=''",
+  "duration_seconds": 194.65,
+  "api_tests_passed": 2,
+  "validated_implementation_fingerprint_before_doc_only_change": "02fbccd6a9116b0db2c24bcfdc6e3ca53ded96051e92a85c3e52864a69ab6cdc",
+  "post_validation_change": "documented public forwarder; underlying orchestrator AST unchanged",
+  "post_change_api_and_provenance_tests_passed": 5,
+  "full_suite_tests_passed": 441,
+  "full_suite_warnings": 0
+}

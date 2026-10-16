@@ -66,11 +66,14 @@ Verifies all 68 critical requirements from Milestone M7 specification:
 63. no champion selection.
 64. no champion selection implementation.
 65. no XGBoost implementation.
-66. no M9+ artifacts.
+66. earlier model runs preserve later milestone reports.
 67. frozen prior manifests remain intact.
 68. lint clean.
 """
 
+from __future__ import annotations
+
+import hashlib
 import tempfile
 from pathlib import Path
 
@@ -735,12 +738,15 @@ def test_65_no_champion_selection_implementation():
     assert not (settings.processed_data_dir / "m10_champion_selection.parquet").exists()
 
 
-# 66. no M10+ artifacts
-def test_66_no_m10_plus_artifacts():
-    settings = get_settings()
-    assert not (settings.project_root / "docs" / "M10_CHAMPION_SELECTION_REPORT.md").exists()
-    assert not (settings.project_root / "docs" / "M11_HOLDOUT_REPORT.md").exists()
+# 66. earlier runs preserve later milestone reports
+def test_66_should_preserve_later_milestone_reports(later_milestone_report_hashes: dict[Path, str | None]) -> None:
+    """Earlier milestone execution must preserve later reports, whether present or absent."""
+    expected_hashes = later_milestone_report_hashes
 
+    actual_hashes = {path: hashlib.sha256(path.read_bytes()).hexdigest() if path.exists() else None
+                     for path in expected_hashes}
+
+    assert actual_hashes == expected_hashes
 
 
 # 67. frozen prior manifests remain intact
