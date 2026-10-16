@@ -1,6 +1,6 @@
 # TR–RU Forecast: Mevcut Durum ve Tamamlama Planı
 
-Tarih: 7 Ekim 2026; ilerleme son güncelleme: 14 Ekim 2026. Bu belge mevcut checkout, kaynak kod, yerel geliştirme çıktıları ve specification v1.1 üzerinden hazırlanmıştır. Her milestone ayrı görev ve kabul kapısıyla ilerler. Yeni bir kapsam/specification freeze yerine mevcut M0–M15 yol haritasını somutlaştırır.
+Tarih: 7 Ekim 2026; ilerleme son güncelleme: 16 Ekim 2026. Bu belge mevcut checkout, kaynak kod, yerel geliştirme çıktıları ve specification v1.1 üzerinden hazırlanmıştır. Her milestone ayrı görev ve kabul kapısıyla ilerler. Yeni bir kapsam/specification freeze yerine mevcut M0–M15 yol haritasını somutlaştırır.
 
 ## İlerleme checklisti
 
@@ -14,53 +14,53 @@ Kural: Bir madde ancak dosya, komut sonucu, test veya raporla doğrulanınca `[x
 - [x] M9 kayıtlı input checksum'ları manifestler, development features ve frozen validation folds ile doğrulandı.
 - [x] `ruff check .` ve frontend `npm run build` geçti.
 - [x] M9 hedefli testleri: 40 geçti; bir dependency deprecation uyarısı kayda geçti.
-- [x] Tam Python suite, testlerin geçici dizinlere yazdığı izole koşumda GREEN: kilitli temiz ortamda 364 test geçti.
+- [x] Tam Python suite, testlerin geçici dizinlere yazdığı izole koşumda GREEN: M9 kabulünde 364, M10 sonrası kilitli temiz ortamda 415 test geçti (1 mevcut dependency uyarısı).
 - [x] Proje durum ve tamamlama planı bu dosyada oluşturuldu.
 
 ### A — M9 kabulü ve yeniden üretilebilirlik
 
 - [x] A1. Mevcut M9 kaynak/config/test diff'i dosya dosya incelendi; bulgular `M9_ACCEPTANCE_REPORT.md` içinde kaydedildi.
-- [ ] A2. Kod kurallarına uyum incelemesini kapat: 30 satırı aşan 10 fonksiyon, `Any`, domain kayıt türleri ve modül sınırları için kayda alınmış refactor bulgularını kapat.
+- [x] A2. M9 ML fonksiyonları <=30 satır; imzalar tipli, `Any`/type-ignore yok. 40 M9 testi ve frozen CV replay (3.934 tahmin / 82.614 SHAP satırı) sayısal eşdeğerliği doğruladı; `M11_ACCEPTANCE_REPORT.md`.
 - [x] A3. Testler pytest geçici processed-data kopyasına yönlendirildi; tam suite bu izolasyonla geçti (364 test).
 - [x] A4. Run metadata gerçek commit/dirty state, M9 source fingerprint'i ve input/output checksum'larını kaydediyor; ikinci temiz run ile doğrulandı.
 - [x] A5. `uv.lock` ile runtime/dev extras temiz Python 3.13 ortamına kuruldu; production `ComtradeClient` ve runtime `httpx` import edildi.
 - [x] A6. M4, M8 ve M9 rapor statüleri ile README mevcut milestone ve kanıtlara göre hizalandı.
 - [x] A7. M4/M5 veri vintage, yaklaşık macro release date ve forecast decision-time kayıtları denetlendi; point-in-time/gerçek zaman iddiası kanıtlanmadığı için kapsam `M9_ACCEPTANCE_REPORT.md` içinde daraltıldı.
 - [x] A8. M9 ayrı run klasöründe yeniden üretildi; manifest, prediction, metric, interval, SHAP ve metadata tutarlılığı doğrulandı.
-- [x] A9. M9 kabul kaydı yazıldı; A2 review bulguları açık olduğu için M10 kapısı kapalı tutuldu.
+- [x] A9. M9 kabul kaydı ve Stage A takip kaydı tamamlandı; A2 kapandı, uyarı kaynağında giderildi ve M11 gate açıldı.
 
 ### B — M10 champion seçimi
 
-- [ ] B1. 14 seri × 3 horizon için dört modelin aynı validation fold anahtarlarını birleştir.
-- [ ] B2. Tie, sıfır denominator, failed/missing candidate ve yüzde 2 göreli kazanç kurallarını deterministik hale getir.
-- [ ] B3. Seasonal Naive champion olursa aralıkların nasıl üretileceğini veya unavailable gösterileceğini önceden belirle.
-- [ ] B4. Seçiciyi ve registry'yi uygula; 42 grubun tamamında champion veya gerekçeli unavailable üret.
-- [ ] B5. `M10_CHAMPION_REPORT` ve immutability/checksum kanıtını yaz; holdout'u kapalı tut.
+- [x] B1. 14 seri × 3 horizon için dört modelin aynı validation fold anahtarlarını birleştir: 281 ortak aylık origin; 15.736 audit satırı.
+- [x] B2. Tie, sıfır denominator, failed/missing candidate ve yüzde 2 göreli kazanç kuralları seçici ve 51 M10 testiyle doğrulandı.
+- [x] B3. Seasonal Naive interval politikası registry referansında açıkça unavailable olarak belirlendi; yöntem uydurulmadı.
+- [x] B4. Seçici ve registry uygulandı; 42 champion/fallback kararı (SARIMA 33, XGBoost 9) üretildi.
+- [x] B5. `M10_CHAMPION_SELECTION_REPORT.md` ve `M10_ACCEPTANCE_REPORT.md` ile tekrar üretim/immutability/checksum kanıtı kaydedildi; holdout kapalı. Stage A takip kaydı A2 ve M8 eşdeğerlik gate'ini kapattı; M11 sonuçları aşağıda kaydedildi.
 
 ### C — M11 öncesi deney freeze
 
-- [ ] C1. Her holdout hedef ayı ve horizon için forecast origin, training end ve bilgi erişim tarihlerini tabloya dök.
-- [ ] C2. Tek origin/fixed fit ile rolling origin/refit protokolünden birini spec'e göre kesinleştir; gerekirse v1.2 amendment yaz.
-- [ ] C3. Erken 2025 hedeflerinde origin'den sonra yayımlanan 2024 target/macro değerlerinin kullanılamadığını test et.
-- [ ] C4. Kalibrasyon residual havuzunun her origin'de yalnız o tarihe kadar bilinen değerleri içerdiğini kanıtla.
-- [ ] C5. Champion/model/config hashleri ve scoring kodunu freeze et; holdout kullanımının tek seferlik kaydını hazırla.
+- [x] C1. 504 task-origin hücresi için origin_date, forecast_period, train_end ve deterministik erişim kuralları kaydedildi; gerçek tarihsel yayın zamanı kanıtı iddia edilmedi.
+- [x] C2. Kullanıcının onayıyla aylık rolling origin/refit ve retrospective latest-vintage kapsamı, scoring öncesi Protocol §19 ve holdout_spec_v1_1.yaml ile kilitlendi.
+- [x] C3. Origin sonrası target ve deterministik availability tarihi sonrası macro mutasyonlarının origin özelliklerini değiştirmediği test edildi. Bu, gerçek published_at/vintage kanıtı değildir.
+- [x] C4. CV-seed ve sonraki gerçekleşmiş residual havuzlarında target <= origin şartı test/audit ile doğrulandı; minimum XGBoost kalibrasyon sayısı 86.
+- [x] C5. Champion karar hash'i, orijinal registry checksum arşivi, gate input hashleri ve M11 source fingerprint'i kaydedildi; ilk değerlendirme ve izinli tekrar üretimler ayrı immutable paketlerde korundu.
 
 ### D — M11 final holdout
 
-- [ ] D1. Dondurulmuş protokolle holdout predictions üret; sonuçlara göre model/özellik/interval değiştirme.
-- [ ] D2. Seri, horizon ve kapsanan ay sayısıyla sMAPE/MAE/RMSE ve champion–baseline farklarını hesapla.
-- [ ] D3. Aralık coverage/width ve failed/null tahminleri denominatörleriyle raporla.
-- [ ] D4. Final dataset/run/model/config hashlerini ve validation–holdout ayrımını kaydet.
-- [ ] D5. `M11_HOLDOUT_REPORT` yayımla ve araştırma sonuçlarını freeze et.
+- [x] D1. 42 görev × 12 hedef × 3 rol = 1.512 kayıt üretildi; model, özellik, order ve hiperparametreler yeniden seçilmedi.
+- [x] D2. 42 satırlık leaderboard ile sMAPE/MAE/RMSE, paired-origin skill, raw/operational metrikler ve CV drift hesaplandı.
+- [x] D3. Coverage/width ve paydalar raporlandı; bir negatif champion ve bir negatif fallback ham olarak korundu. XGBoost 80% undercoverage gizlenmedi.
+- [x] D4. Tüm input/output hashleri ve kaynak fingerprint'i doğrulandı; bağımsız make koşumu altı sayısal veri artifactinin hash'ini eşledi.
+- [x] D5. `M11_FINAL_HOLDOUT_REPORT.md` ve `M11_ACCEPTANCE_REPORT.md` tamamlandı. 441 test/0 uyarı; teslimde 31 hedefli test/0 uyarı ve tekrar üretim doğrulandı.
 
 ### E–F — Serving ve M12 API
 
 - [ ] E1. Backtest artefactleriyle live serving modellerinin yaşam döngüsünü ayır; yüklenebilir inference modellerini üret.
 - [ ] E2. PostgreSQL/Supabase schema, migration, unique constraints, idempotent upsert ve read-only demo erişimini kur.
-- [ ] E3. Kaynak provenance, snapshot/run, forecast origin, horizon, unit ve interval availability metadata'sını taşı.
-- [ ] F1. Overview, trade, forecasts, metrics, sectors, mirror, indicators ve methodology read endpointlerini tanımla.
-- [ ] F2. Typed response/error, pagination, filters, stale/unavailable durumları ve server-side repository katmanını uygula.
-- [ ] F3. CORS, secrets, readiness, DB unavailable ve API contract testlerini doğrula; `/health` ile readiness'i ayır.
+- [x] E3. Artifact API; source/reporter/flow, manifest/run digests, origin/target, horizon, unit ve interval availability metadata'sını taşıyor. İleriye dönük serving-model lifecycle E1 kapsamında açık.
+- [x] F1. Overview, trade, forecasts, metrics/leaderboard, sectors, mirror, indicators ve methodology GET endpointleri typed sözleşmelerle uygulandı.
+- [x] F2. Immutable artifact repository → service → router; typed response/error, pagination, tarih/sector/horizon filtreleri ve unavailable yanıtları uygulandı. Frozen observation cutoff ile retrieval tarihi ayrı; güncel veri freshness iddiası yok.
+- [x] F3. Kullanıcının disk-artifact M12 kapsamı için exact-origin CORS, checksum/readiness, missing/corrupt paket 503 ve API contract testleri doğrulandı (70 API testi/0 uyarı; tam suite 509 test/0 uyarı, 806.75 s). DB bağlantısı/migration E2 kapsamında açık; DB unavailable kanıtı iddia edilmiyor.
 
 ### G — M13 dashboard
 
@@ -80,7 +80,7 @@ Kural: Bir madde ancak dosya, komut sonucu, test veya raporla doğrulanınca `[x
 - [ ] I3. MUST maddelerini kanıtlarla kapat; API/UI/data/report uyumunu son kez kontrol et.
 - [ ] I4. İstenmiş ayrı yayın yetkisiyle semver tag, changelog, artifact checksum ve kalıcı demo release'ini tamamla.
 
-**Bir sonraki açık madde: A2 — uzun M9 fonksiyonları ve gevşek kayıt tipleri için bakım/refactor incelemesini kapatmak.** Bu madde kapanana kadar M9 tam kabul edildi veya M10'a hazır işaretlenmeyecek.
+**M12 kapsam kararı:** Kullanıcının 16 Ekim promptu mevcut M10/M11 artifactlerini diskten sunan API'yi istedi; model eğitimi/serialization ve PostgreSQL E1–E2 açık kalır. M13 ilk UI dilimi bu artifact API sözleşmesine bağlanabilir; ayrı kullanıcı görevi olmadan başlanmaz.
 
 ## 1. Projenin amacı ve portfolyo konumu
 
@@ -101,17 +101,20 @@ Authoritative belgeler `specification/` içindeki v1.1 dosyalarıdır. `TR_RU_Fo
 | M6: Seasonal Naive | 3.934 tahmin, 42 metrik grubu | Uygulanmış; mevcut çıktı 80/95 aralık içermiyor |
 | M7: SARIMA | Model/order selection/backtest/diagnostics/failure log | Git geçmişinde dondurulmuş; 3.934 geçerli tahmin mevcut |
 | M8: SARIMAX | Son commit `9d539b8 feat: complete M8 SARIMAX`; 1.344 başarılı fit, 3.934 tahmin | Git'e alınmış; rapor FINAL CANDIDATE / AWAITING EXTERNAL REVIEW diyor |
-| M9: XGBoost | Direct modeller, tuning, conformal, SHAP, provenance ve ayrı acceptance run | Model/reproducibility kanıtı doğrulandı; A2 code-structure review açık, M10 kapalı; commit edilmedi |
-| M10–M11 | Champion/holdout implementation ve çıktı yok | Başlanmamış |
-| M12: API | `api/main.py`: yalnız `/` ve `/health` | İskelet; ürün verisi sunmuyor |
+| M9: XGBoost | Direct modeller, tuning, conformal, SHAP, provenance ve ayrı acceptance run | A2 refactor/uyarı düzeltmesi ve tam sayısal CV eşdeğerliği doğrulandı |
+| M10 | CV-only selector, 168 aday, 42 champion/fallback, registry, checksum ve rapor | Uygulandı; 42 karar korundu, pre-M11 gate koşulları Stage A ile kapandı |
+| M11 | 1.512 rol kaydı, 42 görevlik matris, native/conformal aralıklar, 9.072 SHAP satırı, hash/provenance | Retrospective latest-vintage deterministik lag kapsamıyla tamamlandı; 441 test / 0 uyarı |
+| M12: API | Typed, checksum-pinned frozen artifact GET API; 14 sectors/42 tasks/168 CV candidates, 1,512 forecasts and 9,072 SHAP rows | Verified: 70 API tests + 509 full-suite tests, zero warnings; no deployment claim |
 | M13: UI | Tek ana sayfa ve dört metinlik TR/EN/RU sözlüğü; varsayılan TR | İskelet; grafikler, veri bağlantısı ve dil değiştirme akışı yok |
 | M14–M15 | Araştırma klasörü yalnız `.gitkeep`; README hâlâ M1/v1.0 | Paketleme ve release kabulü eksik |
 
-Kesin devam noktası: **A2 code-structure refactor/review → M9 acceptance closure → M10 → M11 → M12 → M13 → M14 → M15**. M1'den yeniden başlanmamalı; M9 sadece rapor checkbox'larına bakılarak tamamlanmış sayılmamalı.
+Kesin devam noktası: **M13 artifact API'ye bağlı UI → M14 → M15**; ileriye dönük inference ve PostgreSQL (E1–E2) ürünün tam V1 kabulü için ayrıca açık. M1'den yeniden başlanmamalı; M9 sadece rapor checkbox'larına bakılarak tamamlanmış sayılmamalı.
 
 Git çalışma alanında M9'a ait yeni dosyalar ile `pyproject.toml` ve mevcut testlerde değişiklikler var. Bu değişiklikler korunmalı; reset/clean yapılmamalı. Kod değişikliği gerektiren sonraki işte bu çalışma durumunu içeren ayrı checkout/worktree kullanılmalı. HEAD'den oluşturulan sıradan worktree commit edilmemiş M9'u kendiliğinden içermez.
 
 ## 3. Mevcut deneyin sınırları ve gözlenen sonuçlar
+
+Bu bölüm ilk M9 incelemesinin tarihsel bulgularını korur. Güncel M11 sonuçları üstteki ilerleme kaydında ve `M11_ACCEPTANCE_REPORT.md` içindedir.
 
 - Forecast target iki yönde de Türkiye-reported: TR→RU ihracat, RU→TR ithalat. Russia-reported veriler tarihsel mirror/reference; hedefi tamamlamak veya ortalamasını almak için kullanılamaz.
 - Frozen veri evreni: 2012-01–2025-12. Development: 2012-01–2024-12. Final holdout: 2025-01–2025-12.
@@ -150,11 +153,11 @@ Nominal aralıkların altında kapsama önemli bir araştırma bulgusudur. Mevcu
 4. **Test izolasyonu — M9 doğrulandı:** Pytest processed-data klasörünü geçici kopyaya alıyor; 364 test ana research artifact'lerine yazmadan geçti.
 5. **Bağımlılıklar — M9 doğrulandı:** `uv.lock` üretildi, `httpx` runtime dependency oldu ve kilitli production/dev kurulumu temiz Python 3.13 ortamında doğrulandı. Frontend lock/build kontrolleri release aşamasında tekrarlanmalı.
 6. **Tarihsel knowability — sınırlama belgelendi:** Makro as-of filtreleri yaklaşık yayın tarihleri kullanıyor; latest-vintage verinin geçmişte bilinen değerlerle aynı olduğu kanıtlanmıyor. M9 raporu point-in-time/gerçek zaman iddiası taşımıyor.
-7. **Trade karar zamanı — açık:** Aylık `feature_snapshot_date` gerçek veri yayın zamanını ve karar yapılabilirliğini tek başına kanıtlamıyor; M11 öncesi ayrıca sözleşme ve vintage denetimi gerekli.
-8. **Holdout geometrisi:** Tek 2024-12 origin ve h1/h3/h6 yalnız üç hedef aya tahmin verir; 12 aylık holdout'un tamamını otomatik değerlendirmez. Tek-origin/fixed-fit ile rolling-origin/refit ayrımı M11'den önce yazılı olarak çözülmeli.
+7. **Trade karar zamanı — kapsam sınırı belgelendi:** Gerçek yayın zamanı/vintage kanıtı yok. Kullanıcının açık talebiyle M11 retrospective latest-vintage ve deterministik lag sözleşmesiyle tamamlandı; gerçek zamanlı knowability iddiası yok.
+8. **Holdout geometrisi — çözüldü:** Protokol §19 ve holdout spec, her 2025 hedefi için target-minus-h origin ve expanding refit tanımlar; 42 görev × 12 hedef tamamlandı. Erken originlerin retrospective reconstruction sınırı raporlandı.
 9. **Baseline belirsizliği:** Seasonal Naive champion olabilir ama mevcut çıktısında aralık yok. M10 öncesinde development-only, seri/horizon bazlı residual interval yöntemi ve kalibrasyon erişilebilirliği dondurulmalı veya ürünün interval unavailable durumuna ilişkin spec değişikliği açıkça kabul edilmeli.
 10. **Servis sınırı:** API'de wildcard CORS + credentials, typed domain response yok; PostgreSQL/Supabase yalnız config alanı. Public demo read-only, sunucu yetkileri ve resource limits somutlaştırılmalı.
-11. **Bakım sözleşmesi — A2 açık:** M9 ML klasöründe AST incelemesi 10 fonksiyonun 30 satırı aştığını ve birkaç model/record sınırının `Any`/gevşek dict kullandığını doğruladı. Ruff geçmesi rehber uyumunu kanıtlamıyor. Typed kayıtlar ve küçük fonksiyonlara ayırma tamamlanmadan M9 checklist'i kapanmayacak.
+11. **Bakım sözleşmesi — A2 kapandı:** Typed kayıtlar ve küçük fonksiyonlara ayırma tamamlandı. AST uzunluk/tip denetimi, 40 M9 testi ve tam sayısal CV replay eşdeğerliği doğrulandı; Stage A kabul kaydı mevcut.
 
 Tarihsel vintage ayrımı için resmi kaynak: [ALFRED download help](https://alfred.stlouisfed.org/help/downloaddata). Multi-step rolling-origin değerlendirme için: [Forecasting: Principles and Practice — time series cross-validation](https://otexts.com/fpp3/tscv.html). Bunlar proje kaynaklarının tümü için vintage erişiminin bulunduğu anlamına gelmez.
 
@@ -291,3 +294,21 @@ Kritik yol: A → B → C → D → E → F → G → I. Research draft ve API/U
 V1 ancak bağımsız holdout raporu, deterministik champion registry, gerçek artifact inference/serving, PostgreSQL katmanı, bağlı FastAPI/Next.js ürün akışı, TR/EN/RU temel deneyim, yeniden üretilebilir araştırma paketi ve canlı release kabulü birlikte mevcut olduğunda tamamlanmıştır. Sadece model çıktısı, başarılı build veya görsel dashboard bu sınırı karşılamaz.
 
 V1'e deep learning, başka ülkeler, HS6, mobil uygulama, auto-trading, LLM tahminleri, causal claims ve günlük retraining eklenmez. Bunlar bu projenin bitmesini uzatır ve mevcut spec'in dışındadır.
+
+### 14 Ekim 2026 — M10 uygulama kaydı
+
+Kullanıcının doğrudan M10 uygulama isteği kapsamında B1–B5 yürütüldü. Bu ilerleme A2 bakım bulgularını veya M8 run metadata'sındaki validation YAML hash farkını kapatmaz. Tam deney kabulü ve M11 kapısı açık önkoşullar nedeniyle kapalıdır. Seçim mevcut v1.1 protokolündeki 96/94/91 aylık origin, MAE tie-break ve yüzde 2 göreli parsimony kuralını korur; prompttaki beş fold varsayımı uygulanmadı. Doğrulama komutları ve test sonuçları `docs/M10_ACCEPTANCE_REPORT.md` içinde kayıtlıdır.
+
+### 16 Ekim 2026 — Stage A ve M11 teslim doğrulaması
+
+M9 A2 kapandı; httpx2 ile uyarı kaynağında giderildi, global deprecation filtresi kaldırıldı. M8 eski metadata hash'i değiştirilmeden takvim/hedef eşdeğerliği gate kuralı kabul edildi. Kullanıcının açık kapsam düzeltmesiyle 2025 holdout değerlendirmesi retrospective latest-vintage/deterministik lag kuralları altında tamamlandı. Tüm 42 görevde 12 hedef, üç rol, Conformal havuz cutoff, SHAP, ham negatif tahminler ve kayıtlı fallback davranışı raporlandı. İlk tam suite 441 passed / 0 warnings; teslim tarihi hedefli kontrol 31 passed / 0 warnings. Ayrıntılı kanıt `docs/M11_ACCEPTANCE_REPORT.md` içindedir. M12'ye otomatik geçilmedi.
+
+### 16 Ekim 2026 — M12 read-only artifact API
+
+Kullanıcının açık disk-artifact sunum kapsamıyla typed FastAPI API uygulandı. 20 dosyalık serving manifesti, M10/M11 upstream checksum çapraz kontrolü, immutable snapshot, global/task CV/holdout metrikleri, ham/operasyonel fallback tahminleri, 9.072 gerçek SHAP değeri ve mirror veri boşlukları endpoint sözleşmesine taşındı. Hedefli kabul: 70 API testi, 0 uyarı; tam suite kabulü `M12_ACCEPTANCE_REPORT.md` içinde. Yerel Uvicorn TCP smoke geçti; production deploy/M13 browser UAT yapılmadı. E1–E2 model/DB işleri bu kullanıcının M12 isteğinden ayrı kalır.
+
+### 16 Ekim 2026 — M13 kabulü ve M14 portfolyo vitrini
+
+M13 kabul raporu, beş modüllü Next.js arayüzünü, canlı API/doğrulanmış snapshot modlarını, deterministik snapshot hash'ini ve 511 testlik tam suite'i kaydeder. Bu teslim yerel build ve browser smoke kanıtıdır; hosted deployment ve gerçek kullanıcı UAT değildir. M11 kapsamı README ve API/UI boyunca **retrospective latest-vintage holdout evaluation under deterministic lag rules** olarak açıklanır; historical publication-time archive ve macro vintage replay kanıtı değildir.
+
+M14 kapsamında README; doğrulanmış metrikler, metodoloji ve kaynak sınırları, mimari diyagram, API/dashboard kullanım yolu, offline build notu ve Pre-M3/M3–M13 rapor diziniyle yenilendi. M10–M13 durumları milestone/specification kayıtlarında eşitlendi. Daha geniş M14 çıktıları (research report/working paper, Türkçe özet, Rusça abstract, veri sözlüğü ve kaynak/lisans paketlemesi) tamamlanmadığından M14 bütünü açık kalır; M15 release/deploy/UAT ayrıca değerlendirilir.

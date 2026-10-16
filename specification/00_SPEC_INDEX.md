@@ -1,10 +1,10 @@
 # TR–RU Bilateral Trade Forecasting & Intelligence Platform
 ## Specification Pack v1.1
 
-**Status:** SPECIFICATION AMENDMENT (v1.1)  
+**Status:** FROZEN SPECIFICATION v1.1; implementation accepted through M13
 **Version:** 1.1  
 **Previous Version:** 1.0 (Frozen initial release)  
-**Changelog:** [`specification/CHANGELOG.md`](file:///Users/kagansmtdms/Downloads/tr-ru_forecast/specification/CHANGELOG.md)
+**Changelog:** [`CHANGELOG.md`](CHANGELOG.md)
 
 Bu paket proje kapsamını, veri sözleşmesini, deney protokolünü ve milestone kabul kriterlerini kilitler. v1.1 sürümü, Pre-M3 authenticated full-history verification bulguları doğrultusunda forecast target source politikasını güncellemiştir.
 

@@ -2,9 +2,9 @@
 # Implementation Roadmap & Acceptance Gates
 
 **Version:** 1.1  
-**Status:** READY FOR PROMPT GENERATION (v1.1)  
+**Status:** M0–M13 implementation/acceptance recorded; M14 portfolio packaging in progress (v1.1)
 **Previous Version:** 1.0 (Frozen initial release)  
-**Changelog:** [`specification/CHANGELOG.md`](file:///Users/kagansmtdms/Downloads/tr-ru_forecast/specification/CHANGELOG.md)
+**Changelog:** [`CHANGELOG.md`](CHANGELOG.md)
 
 Rule: coding agent receives **one milestone at a time**.
 
@@ -153,7 +153,7 @@ Acceptance:
 - SHAP not causal
 - 80/95 intervals from development residuals/conformal method
 
-## M10 — Champion Selection & Registry
+## M10 — Champion Selection & Registry — ACCEPTED (2026-10-14)
 Rule:
 1. lowest validation sMAPE
 2. MAE tie-break
@@ -167,7 +167,9 @@ Acceptance:
 
 **GATE:** experiment design fully frozen.
 
-## M11 — Final Holdout Evaluation
+Acceptance evidence: [`docs/M10_ACCEPTANCE_REPORT.md`](../docs/M10_ACCEPTANCE_REPORT.md) and [`docs/M10_CHAMPION_SELECTION_REPORT.md`](../docs/M10_CHAMPION_SELECTION_REPORT.md). Selection uses the frozen 281-origin calendar and does not open the holdout. The acceptance record retains the legacy M8 validation-manifest discrepancy and its explicit equivalence check.
+
+## M11 — Final Holdout Evaluation — ACCEPTED (2026-10-14)
 Goal: evaluate champion models on the untouched 12-month holdout (`2025-01 → 2025-12`).
 
 Acceptance:
@@ -177,7 +179,9 @@ Acceptance:
 - negative/null results retained
 - reproducible final report
 
-## M12 — Backend API
+Evaluation scope: **retrospective latest-vintage holdout evaluation under deterministic lag rules**. No historical publication-time archive or macro vintage snapshots were used; real-time decision-time availability is not established. See [`docs/M11_ACCEPTANCE_REPORT.md`](../docs/M11_ACCEPTANCE_REPORT.md) and [`docs/M11_FINAL_HOLDOUT_REPORT.md`](../docs/M11_FINAL_HOLDOUT_REPORT.md).
+
+## M12 — Backend API — ACCEPTED (2026-10-16)
 Minimum semantics:
 - overview
 - trade history
@@ -194,7 +198,9 @@ Acceptance:
 - data freshness metadata
 - canonical/mirror distinction preserved
 
-## M13 — Frontend Dashboard
+Accepted scope is the read-only, checksum-verified API over frozen local artifacts. It does not provide online inference, PostgreSQL persistence, live data refresh or a production deployment. Evidence: [`docs/M12_ACCEPTANCE_REPORT.md`](../docs/M12_ACCEPTANCE_REPORT.md).
+
+## M13 — Frontend Dashboard — ACCEPTED (2026-10-16)
 Modules:
 - Overview
 - Trade Explorer
@@ -213,7 +219,9 @@ Acceptance:
 - responsive core use
 - methodology/uncertainty not hidden
 
-## M14 — Research & Portfolio Packaging
+Delivered scope: five dashboard modules, strict TypeScript, live-API/verified-snapshot modes, deterministic static snapshot and local production build. Local browser/build evidence is not hosted deployment or real-user acceptance. The interface discloses the retrospective latest-vintage deterministic-lag scope. Evidence: [`docs/M13_ACCEPTANCE_REPORT.md`](../docs/M13_ACCEPTANCE_REPORT.md).
+
+## M14 — Research & Portfolio Packaging — IN PROGRESS
 Deliverables:
 - final README
 - architecture diagram
@@ -225,6 +233,8 @@ Deliverables:
 - Russian abstract
 - Turkish project summary
 - reproducibility instructions
+
+The README/specification showcase portion is recorded in [`docs/M14_PORTFOLIO_ACCEPTANCE_REPORT.md`](../docs/M14_PORTFOLIO_ACCEPTANCE_REPORT.md). The working paper, Turkish summary, Russian abstract, data dictionary and source/licensing package remain open.
 
 Paper:
 1. Abstract

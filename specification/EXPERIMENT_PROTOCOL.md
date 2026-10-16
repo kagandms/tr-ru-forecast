@@ -225,3 +225,13 @@ Must already be frozen:
 - champion rule
 - interval method
 - holdout months
+
+## 19. M11 evaluation amendment — frozen before holdout scoring (2026-10-14)
+
+For M11, the user explicitly authorizes **retrospective latest-vintage holdout evaluation under deterministic lag rules**. Section 9's development-only refit statement is extended to monthly expanding refits at `origin = target month - horizon`, for each of the twelve 2025 target months and h1/h3/h6. Orders, model assignments, features and tuned parameters remain frozen; neither CV nor holdout may reselect them.
+
+Trade availability is assumed at reference-month end with zero additional trade lag. This is a deterministic retrospective convention, not evidence of actual release times. Macro values are latest-vintage and selected using the existing frozen approximate availability dates at each feature-row month-end. Historical vintage fidelity and real-time actionable forecasting are not claimed. Early h3/h6 origins before the 2024-12 development freeze are explicitly retrospective reconstructions using subsequently frozen model assignments.
+
+Section 12's ban on holdout calibration is amended solely for chronological prequential residual updates, requested by the user before any M11 scoring: seed each task/model from frozen M9 out-of-sample residuals whose target month is <= forecast origin; subsequently admit that model's earlier holdout residuals only when their target month is <= the new origin. No future residual, residual from another series/horizon/model, retrospective interval tuning or nominal-level adjustment is permitted. A minimum of 19 eligible residuals is checked, not fabricated.
+
+Each task executes its unchanged champion, registered fallback and Seasonal Naive. Invalid/negative primary forecasts are recorded raw. Operational fallback uses the registered fallback only when it succeeds and is finite/nonnegative. An invalid fallback leaves the operational forecast unavailable. Primary-model performance and served-fallback performance are reported separately, with their denominators. Native classical and fixed prequential 80/95 intervals remain distinct from Seasonal Naive's unavailable interval policy.

@@ -71,3 +71,32 @@ Analytical and modeling documentation strictly distinguishes:
 - Defined mandatory model families: Seasonal Naive, SARIMA, SARIMAX, XGBoost (direct).
 - Defined expanding walk-forward validation and untouched 12-month final holdout.
 - Initial target definition used exporter-reported canonical flows for both directions.
+
+## M10 implementation record — 2026-10-14 (protocol v1.1 unchanged)
+
+- Added deterministic CV-only champion selection, 168-candidate leaderboard, 42-task registry, operational fallback references, eligibility audit and content provenance.
+- Reused the frozen 281 monthly-origin calendar (96/94/91 by horizon), sMAPE primary / MAE tie-break and strictly <2% relative-gain parsimony rule. The pasted five-fold/RMSE-first proposal was not adopted because it conflicts with the authoritative protocol.
+- Negative point predictions invalidate their task/model candidate; observed scores remain available for audit. Worst-origin stability is diagnostic and does not override the frozen champion rule.
+- M9 A2 maintenance findings and the recorded M8 validation-manifest hash discrepancy remain open. Row-level CV calendar alignment is independently checked. M10 implementation does not close those prerequisite reviews or authorize M11 holdout access.
+
+## M11 pre-score amendment — 2026-10-14
+
+The user explicitly authorized retrospective latest-vintage evaluation without external publication/vintage archives, monthly expanding holdout refits and chronological holdout residual updates after a CV seed. Experiment Protocol §19 defines the departure from the former development-only refit and CV-only calibration wording before scoring. Champion assignments, frozen orders/hyperparameters, features, metrics, interval levels and the 12-month holdout remain unchanged.
+
+## M12 artifact API implementation — 2026-10-16
+
+- The user's M12 prompt selects read-only disk-artifact serving of frozen M10/M11 and mirror/history/macro outputs. Added typed Pydantic v2 contracts, validated GET routes, immutable repository/service projections, configured CORS, load-time checksums and structured degraded readiness. No numerical protocol/model/artifact changes.
+- Global and task CV/holdout metrics, governed fallback intervals and actual XGBoost SHAP are available to M13. M2 exporter/importer gap semantics and missing post-2022 mirror pairs remain explicit.
+- Future inference model serialization, PostgreSQL and M13 UI remain separate work; current M12 does not claim a production deployment or real-time vintage fidelity.
+
+## M10–M13 acceptance synchronization — 2026-10-16
+
+- M10 and M11 acceptance reports record completion of the frozen CV-only champion registry and the authorized retrospective latest-vintage 2025 holdout evaluation under deterministic lag rules. The latter is not historical vintage replay or proof of decision-time availability.
+- M12 acceptance records the typed, read-only, checksum-verified local artifact API. M13 acceptance records the five-module Next.js dashboard, API/snapshot modes, deterministic bundled snapshot and local build/browser checks. Neither milestone asserts hosted deployment or real-user UAT.
+- The accepted M11 scope retains 1,512 role predictions and 9,072 local SHAP rows. SHAP is predictive attribution; mirror observations are paired reporter flows supplied through UN Comtrade, not three independently verified national feeds.
+- The M13 frontend snapshot remains pinned to SHA-256 `867a3d8230ca62c23a2f7bc4e7021e0f9f8eba0fe8a727469f1c11b07bebf574`; the 102-file processed-artifact ledger remains the integrity reference.
+
+## M14 portfolio documentation — 2026-10-16
+
+- Rebuilt the repository README as an evidence-led portfolio entry point with results, architecture, methodology limits, API/UI guide, reproducibility commands and M3–M14 report links. Corrected the mirror-source description to match the local artifacts. Verification is in `docs/M14_PORTFOLIO_ACCEPTANCE_REPORT.md`.
+- Synchronized milestone status and specification index. M14 remains in progress because the broader research package (working paper, abstracts, data dictionary and release materials) is not complete; M15 deployment/release acceptance remains separate.

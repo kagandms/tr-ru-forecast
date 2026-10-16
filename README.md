@@ -1,156 +1,106 @@
-# TR–RU Bilateral Trade Forecasting & Intelligence Platform
+# Bilateral Trade Forecasting & Mirror Statistics Platform
 
-Research-oriented economic intelligence platform analyzing bilateral trade flows between Türkiye and Russia, providing 1, 3, and 6-month horizon forecasts, model comparisons, prediction intervals, SHAP explainability, and mirror-statistics data quality analytics.
+**TR ↔ RU | 14 monthly trade series | 1, 3 and 6-month horizons | 42 forecasting tasks**
 
----
+This research platform compares four forecasting families for Türkiye–Russia bilateral trade, preserves exporter/importer mirror discrepancies, and serves frozen evaluation results through a read-only API and a five-module dashboard. The headline holdout is a **retrospective latest-vintage evaluation under deterministic lag rules**; it is not an archival real-time replay.
 
-## 1. Project Status & Milestone
+## Results at a glance
 
-- **Current Milestone:** `M9 — XGBoost development validation; acceptance in progress`
-- **Specification Status:** `Specification Pack v1.1`
-- **Phase:** Data pipelines, 14 frozen target series, feature engineering, four development validation models, and the direct XGBoost implementation are present. M9 artifacts require reproducibility acceptance; champion selection and the final 2025 holdout remain unstarted. The API and dashboard are still skeletal.
+| Stage | Verified result |
+| --- | --- |
+| Development CV (M6–M9) | 42 tasks × 4 families = 168 candidates; shared expanding calendar of 281 monthly origins (96/94/91 for h1/h3/h6), yielding 15,736 observed CV rows. |
+| Champion selection (M10) | 33 SARIMA (78.6%) and 9 XGBoost (21.4%). A simpler candidate is preferred when its relative sMAPE loss is strictly below 2%; this selected SARIMA by parsimony for `TR_RU:85` h1/h3 and `TR_RU:TOTAL` h3. Mean/median task-level CV skill versus Seasonal Naive: 30.51% / 28.30%. |
+| Eligibility | Negative CV predictions invalidate that family/task candidate; values are retained for audit and never silently clipped. SARIMAX was ineligible on 15 tasks with 27 negative forecasts; XGBoost was ineligible on `RU_TR:74/h1` with one negative forecast. |
+| 2025 holdout (M11) | 42 tasks × 12 targets = 504 task/origin cells and 1,512 champion/fallback/baseline role predictions. Operational champion mean sMAPE is 26.17% versus 37.50% for Seasonal Naive (about 30.2% lower relative error). One champion origin used its governed fallback; primary champion metrics and operational metrics remain separately reported. |
+| Intervals and explanations | SARIMA uses native 80%/95% intervals; XGBoost uses prequential conformal intervals with eligible residuals only (`target_month <= origin`, minimum observed pool 86). Nominal 80% coverage for the nine XGBoost champion tasks is 67.59% across 108 valid origins. M11 stores 9,072 local SHAP rows. TreeSHAP provides local and global predictive attributions, not causal effects. |
+| Serving and UI (M12–M13) | Read-only checksum-verified FastAPI artifact API and a strict-TypeScript Next.js dashboard with `LIVE_API` and verified-snapshot modes. The suite has 511 passing pytest tests; 102 processed artifacts are SHA-256 protected. The dashboard snapshot SHA-256 is `867a3d8230ca62c23a2f7bc4e7021e0f9f8eba0fe8a727469f1c11b07bebf574`. |
 
----
-
-## 2. Specification Reference
-
-The project scope, data contracts, modeling rules, and acceptance gates are governed by the frozen documents in [`specification/`](specification/):
-
-1. [`00_SPEC_INDEX.md`](specification/00_SPEC_INDEX.md) — Master index and change-control policy.
-2. [`PROJECT_SPEC.md`](specification/PROJECT_SPEC.md) — Product statement, canonical directions, scope, and Definition of Done.
-3. [`DATA_SPEC.md`](specification/DATA_SPEC.md) — Data contracts, canonical/mirror rules, and sector eligibility filters.
-4. [`EXPERIMENT_PROTOCOL.md`](specification/EXPERIMENT_PROTOCOL.md) — Mandatory models, walk-forward validation, holdout rules, and champion criteria.
-5. [`MILESTONES.md`](specification/MILESTONES.md) — Implementation roadmap, deliverables, and acceptance gates (M0 to M15).
-
----
-
-## 3. Architecture Overview
-
-```text
-External Sources (UN Comtrade, Macro APIs)
-      ↓
-Data Ingestion (Monthly canonical & mirror trade)
-      ↓
-Raw / Validated Data Storage
-      ↓
-Feature Engineering & Mirror Analytics
-      ↓
-Forecasting Models (Seasonal Naive, SARIMA, SARIMAX, XGBoost Direct)
-      ↓
-Evaluation & Champion Selection (Expanding Walk-Forward, Untouched Holdout)
-      ↓
-Model Registry & Forecast Storage
-      ↓
-FastAPI Backend (/health, trade, forecasts, metrics)
-      ↓
-Next.js Multi-language Dashboard (TR / EN / RU)
+```mermaid
+flowchart LR
+  A[UN Comtrade trade series<br/>Türkiye and Russia reporters] --> B[Monthly trade and mirror analytics]
+  C[Configured macro sources<br/>FRED with OECD/IMF, Eurostat/TÜİK, Rosstat] --> D[Deterministic lag and feature pipeline<br/>M3–M5]
+  B --> D
+  D --> E[281-origin rolling CV<br/>4 families · M6–M9]
+  E --> F[CV-only champion registry<br/>M10]
+  F --> G[2025 holdout, intervals and SHAP<br/>M11]
+  G --> H[Read-only artifact API<br/>M12]
+  H --> I[Next.js dashboard<br/>LIVE_API or verified snapshot · M13]
 ```
 
----
+## Findings and method
 
-## 4. Repository Structure
+| Horizon | SARIMA champions | XGBoost champions |
+| --- | ---: | ---: |
+| h1 | 11 | 3 |
+| h3 | 13 | 1 |
+| h6 | 9 | 5 |
 
-```text
-tr-ru_forecast/
-├── specification/             # Frozen v1.1 project, data, and experiment contracts
-├── src/
-│   └── tr_ru_forecast/        # Core Python package
-│       ├── core/              # Frozen constants and central structured logging
-│       ├── config/            # Pydantic Settings and path resolution
-│       ├── data/              # Trade/macro ingestion, quality, and storage
-│       ├── features/          # Target and development feature pipelines
-│       ├── models/            # Baseline, SARIMA/SARIMAX, and XGBoost models
-│       └── evaluation/        # Metrics, folds, and validation; champion selection pending
-├── api/                       # FastAPI entrypoint; product data endpoints pending
-├── frontend/                  # Next.js app; forecasting dashboard pending
-├── tests/                     # Test suite (unit, API integration, smoke tests)
-│   ├── unit/                  # Settings and logging unit tests
-│   └── api/                   # FastAPI health and root endpoint tests
-├── configs/                   # Base configuration YAML files
-├── scripts/                   # Development onboarding and maintenance scripts
-├── data/                      # Local data folders (raw, interim, processed - gitignored)
-├── models/                    # Model artifacts storage (gitignored)
-├── research/                  # Research notebooks and methodology documentation
-├── docs/                      # Technical documentation
-├── .env.example               # Environment variables template
-├── .gitignore                 # Standard ignore file for Python, Node, data, and secrets
-├── pyproject.toml             # Python package, runtime dependencies, and dev extra
-├── uv.lock                    # Resolved Python dependency graph
-├── Makefile                   # Convenient developer commands
-└── README.md                  # Project documentation
-```
+SARIMA wins most tasks in this frozen comparison. XGBoost wins five of its nine tasks at h6 (`RU_TR:10`, `RU_TR:74`, `TR_RU:73`, `TR_RU:85`, `TR_RU:TOTAL`). This is a descriptive result for the specified series, features, origins and parameters; it does not isolate a macro-variable effect or establish that a family will generalize similarly elsewhere.
 
----
+The selection and evaluation pipeline applies four explicit controls: (1) candidate eligibility requires nonnegative point forecasts, without clipping; (2) the strict `<2%` relative-sMAPE rule prefers a simpler eligible family; (3) an invalid refit forecast is replaced operationally only by the registered fallback, while raw champion output and fallback use remain visible; and (4) SHA-256 checks tie 102 processed files to the recorded artifact ledger. The 2025 holdout preserves frozen champion assignments and reports raw, primary and operational outcomes separately.
 
-## 5. Prerequisites
+Mirror analytics compare paired Türkiye- and Russia-reported flows distributed through UN Comtrade. They describe reporter/partner discrepancies, missing pairs and valuation differences. The available bundle does not provide separately acquired and independently verified TurkStat and Rosstat datasets. CIF/FOB differences are not a freight-only estimate, and post-2022 paired structural comparisons are unavailable where there are no paired observations.
 
-- **Python:** 3.11+ (Tested on Python 3.13.9)
-- **Node.js:** 20+ (Tested on Node v24.12.0 / npm 11.6.2)
-- **Make:** Standard build utility (optional, but recommended)
+**Scope:** M11 is a retrospective latest-vintage holdout evaluation under deterministic publication-lag rules. It uses local processed datasets and configured deterministic origin cutoffs; historical `published_at`/`available_at` archives and macro vintage snapshots were not used. Therefore it does not establish real-time decision-time availability or archival-vintage performance. SHAP values explain model predictions and are not causal estimates. This limitation is carried into the API and dashboard.
 
----
+## Dashboard and API
 
-## 6. Local Setup & Quickstart
+The dashboard provides five modules: KPI and provenance header; trade/holdout explorer; champion matrix and model diagnostics; SHAP explainability inspector; and mirror discrepancy monitor. It reads either the live read-only API or a deterministic, SHA-256-verified snapshot bundled at `frontend/public/data/`.
 
-### Option A: Using Makefile
+| Endpoint | Purpose |
+| --- | --- |
+| `/health`, `/api/v1/health` | Service liveness and artifact readiness/provenance |
+| `/api/v1/sectors` | Frozen series catalog |
+| `/api/v1/leaderboard` | CV candidates and task comparisons |
+| `/api/v1/forecasts/{sector_id}` | Historical holdout predictions, intervals and fallback diagnostics |
+| `/api/v1/explainability/{sector_id}` | Global and local XGBoost TreeSHAP results |
+| `/api/v1/mirror-analytics` | Paired mirror observations and discrepancy diagnostics |
+
+Additional read-only routes cover trade history, indicators, overview, metrics and methodology. The API serves frozen artifacts, not newly trained or current-market forecasts. A clean source clone needs the authorized local data bundle; the static frontend build does not require a live Python backend.
+
+## Reproduce locally
+
+Requirements: Python 3.11+ and Node.js 20+.
 
 ```bash
-# 1. Setup virtual environment and install dependencies (Python & Frontend)
-make install
-
-# 2. Run automated tests
-make test
-
-# 3. Run lint checks
-make lint
-
-# 4. Start the FastAPI backend server (http://localhost:8000)
-make run-api
-
-# 5. In a separate terminal, start the Next.js frontend (http://localhost:3000)
-make run-frontend
+uv sync --locked --extra dev
+.venv/bin/ruff check .
+.venv/bin/pytest -W error
+make m10-select
+make m11-holdout
+make m13-export-snapshot
+npm --prefix frontend ci
+npm --prefix frontend run build
+npm --prefix frontend exec -- tsc --noEmit
 ```
 
-For a locked Python environment, use `uv sync --locked --extra dev` from the repository root. `uv.lock` records the resolved runtime and development dependency graph.
+M10 and M11 outputs are immutable by default. Use fresh output directories for independent reruns, for example `make m10-select M10_OUTPUT_DIR=/tmp/m10-reproduction` and `make m11-holdout M11_OUTPUT_DIR=/tmp/m11-reproduction`. M11 reproduction requires the locally available processed artifacts and uses the documented retrospective scope.
 
-### Option B: Manual Setup
+Run the services in separate terminals:
 
 ```bash
-# 1. Python environment setup (version ranges, not lockfile-enforced)
-python3 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-pip install -e ".[dev]"
-
-# 2. Environment variables configuration
-cp .env.example .env
-
-# 3. Verify backend and tests
-pytest tests/
-ruff check .
-
-# 4. Run backend
-python api/main.py
-
-# 5. Setup and build frontend
-cd frontend
-npm install
-npm run build
-npm run dev
+.venv/bin/uvicorn api.main:app --reload
+npm --prefix frontend run dev
 ```
 
----
+For Vercel, select `frontend/` as the Root Directory and use its detected Next.js build (`npm run build`). The committed verified snapshot is included as a static asset; no Python backend is needed during build. A live API connection is optional and configured with `NEXT_PUBLIC_API_BASE_URL`.
 
-## 7. Development Commands
+## Reports and specifications
 
-| Command | Description |
-| :--- | :--- |
-| `make test` | Run test suite via `pytest` |
-| `make lint` | Check Python code formatting and lint rules with `ruff` |
-| `make format` | Automatically fix and format Python code with `ruff` |
-| `make ingest` | Run UN Comtrade ingestion pipeline for both directions |
-| `make ingest-smoke`| Run smoke test ingestion for sample monthly periods |
-| `make run-api` | Launch FastAPI development server with hot-reload |
-| `make run-frontend` | Launch Next.js development server |
-| `make build-frontend`| Produce optimized Next.js production build |
-| `make clean` | Remove temporary cache files, build artifacts, and pycache |
+| Milestone | Evidence |
+| --- | --- |
+| Pre-M3 | [Full-history verification](docs/PRE_M3_FULL_HISTORY_VERIFICATION_REPORT.md) |
+| M3 | [Sector selection](docs/M3_SECTOR_SELECTION_REPORT.md) |
+| M4 | [Macro data foundation](docs/M4_MACRO_DATA_FOUNDATION_REPORT.md) |
+| M5 | [Feature engineering](docs/M5_FEATURE_ENGINEERING_REPORT.md) |
+| M6 | [Seasonal Naive](docs/M6_SEASONAL_NAIVE_REPORT.md) |
+| M7 | [SARIMA](docs/M7_SARIMA_REPORT.md) |
+| M8 | [SARIMAX](docs/M8_SARIMAX_REPORT.md) |
+| M9 | [XGBoost](docs/M9_XGBOOST_REPORT.md), [acceptance](docs/M9_ACCEPTANCE_REPORT.md) |
+| M10 | [Champion selection](docs/M10_CHAMPION_SELECTION_REPORT.md), [acceptance](docs/M10_ACCEPTANCE_REPORT.md) |
+| M11 | [Final holdout](docs/M11_FINAL_HOLDOUT_REPORT.md), [acceptance](docs/M11_ACCEPTANCE_REPORT.md) |
+| M12 | [Serving API](docs/M12_SERVING_API_REPORT.md), [acceptance](docs/M12_ACCEPTANCE_REPORT.md) |
+| M13 | [Dashboard](docs/M13_DASHBOARD_FRONTEND_REPORT.md), [acceptance](docs/M13_ACCEPTANCE_REPORT.md) |
+| M14 | [Portfolio documentation acceptance](docs/M14_PORTFOLIO_ACCEPTANCE_REPORT.md) |
+
+The [specification index](specification/00_SPEC_INDEX.md) links the frozen project, data, experiment and milestone contracts. See the [completion and portfolio plan](docs/COMPLETION_AND_PORTFOLIO_PLAN_2026-10-07.md) for remaining research-packaging and release work. M10–M13 acceptance does not mean a hosted deployment, external vintage archive, current inference service, or full M14/M15 research and release package has been completed.
