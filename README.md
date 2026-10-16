@@ -2,6 +2,8 @@
 
 **TR ↔ RU | 14 monthly trade series | 1, 3 and 6-month horizons | 42 forecasting tasks**
 
+**Live dashboard:** [Open the production deployment](https://frontend-ten-psi-12.vercel.app)
+
 This research platform compares four forecasting families for Türkiye–Russia bilateral trade, preserves exporter/importer mirror discrepancies, and serves frozen evaluation results through a read-only API and a five-module dashboard. The headline holdout is a **retrospective latest-vintage evaluation under deterministic lag rules**; it is not an archival real-time replay.
 
 ## Results at a glance
