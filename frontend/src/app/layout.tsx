@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { LocaleProvider } from '@/locales';
 
 export const metadata: Metadata = {
   title: 'TR–RU Bilateral Trade Forecasting & Intelligence Platform',
@@ -14,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <body>
-        {children}
+        <LocaleProvider>{children}</LocaleProvider>
       </body>
     </html>
   );
