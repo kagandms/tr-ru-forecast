@@ -2,7 +2,7 @@
 # Implementation Roadmap & Acceptance Gates
 
 **Version:** 1.1  
-**Status:** M0–M13 implementation/acceptance recorded; M14 portfolio packaging in progress (v1.1)
+**Status:** M0–M13 implementation/acceptance recorded; M14 research documentation delivered, rights and portfolio closure in progress (v1.1)
 **Previous Version:** 1.0 (Frozen initial release)  
 **Changelog:** [`CHANGELOG.md`](CHANGELOG.md)
 
@@ -233,8 +233,9 @@ Deliverables:
 - Russian abstract
 - Turkish project summary
 - reproducibility instructions
+- source/provenance and licensing register
 
-The README/specification showcase portion is recorded in [`docs/M14_PORTFOLIO_ACCEPTANCE_REPORT.md`](../docs/M14_PORTFOLIO_ACCEPTANCE_REPORT.md). The working paper, Turkish summary, Russian abstract, data dictionary and source/licensing package remain open.
+The working paper, Turkish summary, Russian abstract, data dictionary, reproducibility guide, derived holdout task table and portfolio card are delivered in [`docs/research/`](../docs/research/README.md). M14 remains open because current FRED terms raise an unresolved rights question for macro-assisted software/ML use and demo screenshots/video have not been accepted. See [`docs/M14_PORTFOLIO_ACCEPTANCE_REPORT.md`](../docs/M14_PORTFOLIO_ACCEPTANCE_REPORT.md) and the [source/licensing register](../docs/research/sources-and-licensing.md).
 
 Paper:
 1. Abstract

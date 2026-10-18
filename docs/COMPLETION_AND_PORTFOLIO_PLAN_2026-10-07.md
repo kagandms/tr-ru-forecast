@@ -72,9 +72,9 @@ Kural: Bir madde ancak dosya, komut sonucu, test veya raporla doğrulanınca `[x
 
 ### H–I — Araştırma, portfolyo ve release
 
-- [ ] H1. README/architecture/data dictionary/methodology/limitations/reproduction rehberini gerçek implementasyona göre güncelle.
-- [ ] H2. İngilizce araştırma raporu, Türkçe proje özeti ve Rusça abstract'ı gerçekleşmiş sonuçlarla yaz.
-- [ ] H3. Artifactlerden otomatik sonuç tabloları, demo ekranları/video ve portfolio card hazırla; lisansları doğrula.
+- [x] H1. README/architecture/data dictionary/methodology/limitations/reproduction rehberini gerçek implementasyona göre güncelle. M14 research paketindeki sözlük ve tekrar üretim rehberi 2026-10-18'de eklendi.
+- [x] H2. İngilizce araştırma raporu, Türkçe proje özeti ve Rusça abstract'ı gerçekleşmiş sonuçlarla yaz. Sonuçlar M10/M11 kabul kayıtlarına bağlıdır; rapor hakemli yayın iddiasında bulunmaz.
+- [ ] H3. Artifactlerden otomatik sonuç tabloları, demo ekranları/video ve portfolio card hazırla; lisansları doğrula. 42 görevlik holdout CSV'si, portföy kartı ve kaynak/lisans sicili eklendi; demo medyası ve FRED makro ML kullanım hakkı açık.
 - [ ] I1. Temiz clone kurulumunu; Python test/lint, frontend build/E2E, migration ve secrets kontrollerini CI'da çalıştır.
 - [ ] I2. Docker/local setup, staging/prod config, logs, health, rollback ve UAT runbook hazırla.
 - [ ] I3. MUST maddelerini kanıtlarla kapat; API/UI/data/report uyumunu son kez kontrol et.
@@ -312,3 +312,7 @@ Kullanıcının açık disk-artifact sunum kapsamıyla typed FastAPI API uygulan
 M13 kabul raporu, beş modüllü Next.js arayüzünü, canlı API/doğrulanmış snapshot modlarını, deterministik snapshot hash'ini ve 511 testlik tam suite'i kaydeder. Bu teslim yerel build ve browser smoke kanıtıdır; hosted deployment ve gerçek kullanıcı UAT değildir. M11 kapsamı README ve API/UI boyunca **retrospective latest-vintage holdout evaluation under deterministic lag rules** olarak açıklanır; historical publication-time archive ve macro vintage replay kanıtı değildir.
 
 M14 kapsamında README; doğrulanmış metrikler, metodoloji ve kaynak sınırları, mimari diyagram, API/dashboard kullanım yolu, offline build notu ve Pre-M3/M3–M13 rapor diziniyle yenilendi. M10–M13 durumları milestone/specification kayıtlarında eşitlendi. Daha geniş M14 çıktıları (research report/working paper, Türkçe özet, Rusça abstract, veri sözlüğü ve kaynak/lisans paketlemesi) tamamlanmadığından M14 bütünü açık kalır; M15 release/deploy/UAT ayrıca değerlendirilir.
+
+### 18 Ekim 2026 — M14 araştırma belgeleri
+
+İngilizce 15 bölümlü teknik çalışma raporu, Türkçe proje özeti, Rusça abstract, veri sözlüğü, kaynak/lisans sicili, yeniden üretim rehberi, portföy kartı ve M11 task leaderboard'ından üretilen 42 görevlik holdout tablosu eklendi; dışa aktarma sözleşmesi için beş test, tam suite için 516 test geçti (0 uyarı/hata). Güncel FRED koşulları yazılım/ML kullanımına dair hak açıklaması gerektiriyor; mevcut makro kullanım için izin/alternatif kaynak kanıtı yok. H1/H2 tamamlandı; H3 ve M14 kabulü hakların çözülmesi ve demo görüntü/video kanıtı eklenmesine kadar açık kalır. Kaynak serilerinden ham aylık kayıtlar Git'e eklenmedi.
